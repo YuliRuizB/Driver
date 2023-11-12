@@ -1,0 +1,31 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title></ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-margin">
+
+  <div class="banner">
+    <img src="assets/img/logostudent.png">
+    <h2>Verifiquemos tu<br>
+      <span>correo electrónico</span>
+    </h2>
+    <ion-text color="medium">
+    <h5><small>Es importante verificar que tienes acceso a tu cuenta de correo. Te hemos enviado un mensaje para que verifiques
+      tu cuenta. Cuando la hayas verificado, por favor presiona el siguiente botón.</small></h5></ion-text>
+    <ion-button expand="block" size="large" [routerLink]="['/auth/signin']" routerLinkActive="router-link-active">Ingresar
+    </ion-button>
+  </div>
+
+  <div class="ion-padding">
+    <h2 class="ion-text-center">¿No te llegó un correo electrónico?</h2>
+    <ion-text color="medium">
+      <h5><small>Revisa si llegó en tu bandeja de spam y si no lo encuentras no te preocupes, te lo podemos volver a enviar.</small></h5>
+    </ion-text>
+    <ion-button expand="block" fill="outline" (click)="sendVerificationMail()">Reenviar correo</ion-button>
+  </div>
+
+</ion-content>
+<ion-footer class="ion-no-border">
+</ion-footer>

@@ -1,0 +1,15 @@
+$categories: (
+  taskIntaskOut: var(--ion-color-primary),
+  taskOut: var(--ion-color-warning),
+  taskIn: var(--ion-color-success),
+  noresults: var(--ion-color-danger)
+);
+
+@each $track, $value in map-remove($categories) {
+  ion-item[track='#{$track}'] ion-label {
+    border-left: 2px solid $value;
+    padding-left: 10px;
+  }
+}
+
+

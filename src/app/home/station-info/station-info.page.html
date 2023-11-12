@@ -1,0 +1,52 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="modalDismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="ion-padding">
+      <ion-label class="ion-text-wrap">
+        <h4>{{ station.name }}</h4>
+        <p>{{ station.description }}</p>
+      </ion-label>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+    <div class="map" id="station_map"></div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar color="medium">
+    <ion-title>Autobuses en ruta</ion-title>
+  </ion-toolbar>
+  <div scrollY="true" id="myFixZone">
+    <ion-list>
+      <ion-item *ngFor="let bus of busesList">
+        <!-- <ion-item *ngFor="let bus of busesList" detail (click)="getBusInfo(bus)"> -->
+        <!-- <ion-icon name="bus" size="large" color="warning" slot="start"></ion-icon> -->
+        <ion-thumbnail slot="start">
+          <img src="assets/icon/marker_bus.png">
+        </ion-thumbnail>
+        <ion-label class="ion-text-wrap">
+          {{ bus.vehicleName }}<br />
+          {{ bus.name }}<br />
+          <p color="medium">{{ bus.capacity }} asientos</p>
+          <p color="medium">{{ bus.distance }}km, {{ bus.duration }}</p>
+        </ion-label>
+        <ion-chip slot="end" [color]="bus.occupancyColor" outline="true">
+          <ion-icon [name]="bus.occupancyIcon"></ion-icon>
+          <ion-label>{{ bus.count }} pasajero(s)</ion-label>
+        </ion-chip>
+      </ion-item>
+      <ion-item *ngIf="busesList.length == 0">
+        <ion-icon name="bus" size="large" color="medium" slot="start"></ion-icon>
+        <ion-label>
+          No hay información de autobuses
+        </ion-label>
+      </ion-item>
+     </ion-list>
+ </div>
+</ion-footer>

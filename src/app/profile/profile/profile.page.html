@@ -1,0 +1,117 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Mi perfil
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+
+  <div *ngIf="user && userData">
+    <ion-item lines="none" detail="false">
+      <ion-avatar slot="start">
+        <img [src]="user.photoURL ? user.photoURL : 'assets/img/male_avatar.png'">
+      </ion-avatar>
+      <ion-progress-bar *ngIf="loading" [value]="uploadvalue"></ion-progress-bar>
+      <ion-label color="primary">
+        <h1>{{ user.displayName }}</h1>
+        <h3>{{ user.email }}</h3>
+      </ion-label>
+     <!--  <ion-chip slot="end" color="success" outline="true" (click)="selectImage()">
+        <ion-icon name="camera" color="success"></ion-icon>
+        <ion-label>Cambiar</ion-label>
+      </ion-chip> -->
+      
+    </ion-item>
+
+    <ion-list>
+      <ion-list-header>
+      <ion-label>
+        Detalles  {{userData.displayName}}
+      </ion-label>
+      </ion-list-header>
+
+      <ion-item>
+        <ion-icon slot="start" name="person-circle-outline" color="tertiary"></ion-icon>
+        <ion-input type="text" class="ion-text-right" minLength="4" maxlength="15" name="firstName" [value]="user.firstName"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon slot="start" name="person-circle-outline" color="tertiary"></ion-icon>
+       
+        <ion-input type="text" class="ion-text-right" minLength="4" maxlength="15" name="lastName" [value]="user.lastName"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon slot="start" name="mail" [color]="user.emailVerified? 'success' : 'light'"></ion-icon>
+        <ion-input class="ion-text-right" pattern="email" minLength="8" name="email" [value]="user.email" type="email" ></ion-input>
+        <!-- <ion-label class="ion-text-right">{{ user.email }}</ion-label> -->
+      </ion-item>
+
+      <ion-item>
+        <ion-icon slot="start" name="school" color="tertiary"></ion-icon>
+        <ion-input type="number" class="ion-text-right" minLength="7" maxLength="7" name="employeeId" [value]="user.employeeId" ></ion-input>
+        <!-- <ion-label class="ion-text-right">{{ userData.studentId }}</ion-label> -->
+      </ion-item>
+
+    </ion-list>
+
+    <ion-list *ngIf="userData && userData.defaultRoute">
+      <ion-list-header>
+        <ion-label>
+        Más información
+      </ion-label>
+      </ion-list-header>
+
+      <ion-item [routerLink]="['/purchases/historic']" routerLinkActive="router-link-active" >
+        <ion-icon slot="start" color="primary" name="wallet-outline"></ion-icon>
+        <ion-label>
+          <h2>Mis compras</h2>
+        </ion-label>
+      </ion-item>
+
+      <ion-item [routerLink]="['/share/toggle-share']" routerLinkActive="router-link-active" >
+        <ion-icon slot="start" color="primary" name="navigate-circle-outline"></ion-icon>
+        <ion-label>
+          <h2>Compartir mi actividad</h2>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <ion-list *ngIf="userData && userData.defaultRoute">
+      <ion-list-header>
+        <ion-label>
+        Acerca del Usuario
+      </ion-label>
+      </ion-list-header>
+      <ion-item>
+        <ion-icon slot="start" name="star" color="medium"></ion-icon>
+        <ion-label color="medium">
+          <h2>{{ user.metadata.creationTime | date: 'medium' }}</h2>
+          <p>Usuario creado</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-icon slot="start" name="bookmarks" color="medium"></ion-icon>
+        <ion-label color="medium">
+          <h2>{{ user.metadata.lastSignInTime | date: 'medium' }}</h2>
+          <p>Ultima vez acceso al sistema</p>
+        </ion-label>
+      </ion-item>
+
+    </ion-list>
+
+    
+  </div>
+
+
+</ion-content>
+
+<ion-footer class="ion-no-border">
+
+</ion-footer>

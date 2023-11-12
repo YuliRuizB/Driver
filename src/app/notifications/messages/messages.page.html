@@ -1,0 +1,128 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Centro de Mensajes</ion-title>
+  </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-segment [(ngModel)]="messageType" (ionChange)="segmentChanged($event)">
+      <ion-segment-button value="notifications" layout="icon-start">
+        <ion-label> Notificaciones</ion-label>
+        <ion-icon name="mail-outline"></ion-icon>
+      </ion-segment-button>
+      <ion-segment-button value="messages" layout="icon-start">
+        <ion-label> Mensajes</ion-label>
+        <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <!-- Skeleton screen -->
+  <div *ngIf="loading">
+   
+    <ion-list>
+      <ion-list-header>
+        <ion-label>
+          <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
+        </ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let i of [1,2,3,4]">
+        <ion-avatar slot="start">
+          <ion-skeleton-text animated></ion-skeleton-text>
+        </ion-avatar>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <div [ngSwitch]="messageType">
+
+    <div *ngSwitchCase="'notifications'">
+
+      <div *ngIf="!loading && notifications.length == 0" class="ion-margin ion-padding">
+        <ion-img src="assets/img/support_info.png"></ion-img>
+        <ion-text class="ion-text-center">
+          <h2>Aún no tienes ningúna notificación</h2>
+        </ion-text>
+      </div>
+
+      <!-- Data to display after skeleton screen -->
+      <div *ngIf="notifications.length > 0 && !loading ">
+
+        <ion-list>
+          <ion-list-header>
+            <ion-label>
+              Notificaciones
+            </ion-label>
+          </ion-list-header>
+          <ion-item *ngFor="let data of notifications">
+            <ion-icon [name]="data.icon ? data.icon : 'chatbox-ellipses-outline'" [color]="data.color ? data.color : 'primary'" size="large" slot="start"></ion-icon>
+            <ion-label>
+              <h3>{{ data.title }}</h3>
+              <p class="ion-text-wrap">{{ data.body }}</p>
+              <p class="ion-text-wrap">{{ (data.timestamp.toDate() | date: 'medium') }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+        <ion-item lines="none">
+          <ion-label color="medium"><h3 class="ion-text-center">No hay más notificaciones</h3></ion-label>
+        </ion-item>
+      </div>
+    </div>
+
+    <div *ngSwitchCase="'messages'">
+
+      <!-- Data to display after skeleton screen -->
+      <div *ngIf="messages.length > 0 && !loading ">
+
+        <ion-list>
+          <ion-list-header>
+            <ion-label>
+              Mensajes
+            </ion-label>
+          </ion-list-header>
+          <ion-item *ngFor="let data of messages">
+            <ion-icon [name]="data.icon ? data.icon : 'chatbox-ellipses-outline'" [color]="data.color ? data.color : 'primary'" size="large" slot="start"></ion-icon>
+            <ion-label>
+              <h3>{{ data.title }}</h3>
+              <p class="ion-text-wrap">{{ data.body }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+        <ion-item lines="none">
+          <ion-label color="medium"><h3 class="ion-text-center">No hay más mensajes</h3></ion-label>
+        </ion-item>
+      </div>
+
+      <div *ngIf="!loading && messages.length == 0" class="ion-margin ion-padding">
+        <ion-img src="assets/img/notification.png"></ion-img>
+        <ion-text class="ion-text-center">
+          <h2>Aún no tienes ningún mensaje</h2>
+        </ion-text>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- <ion-infinite-scroll threshold="100px" (ionInfinite)="loadNotificationsData($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Cargando ...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll> -->
+
+</ion-content>

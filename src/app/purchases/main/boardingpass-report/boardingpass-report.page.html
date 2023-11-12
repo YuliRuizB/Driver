@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar color="warning">
+    <ion-buttons slot="start">
+      <ion-back-button text="atrás" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Reportar Problema</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+<ion-text>
+  <h3>¿Qué problema hay con tu pase de abordar?</h3>
+</ion-text>
+  <ion-button color="warning" expand="block" (click)="sendMessage('No está funcionando')">No está funcionando</ion-button>
+  <br />
+  <ion-button color="warning" expand="block" (click)="sendMessage('Alguien más lo está usando')">Alguien más lo está usando</ion-button>
+  <br />
+
+  <ion-list lines="inset">
+    <ion-list-header>
+      Otro problema
+    </ion-list-header>
+
+    <ion-item >
+      <ion-textarea rows="6" [(ngModel)]="message" placeholder="Describe el problema que tienes aquí ..."></ion-textarea>
+      <!-- <ion-input type="text" class="ion-text-right" minLength="4" maxlength="15" name="displayName" [value]="user.displayName" (ionBlur)="updateProfile('displayName', $event)"></ion-input> -->
+    </ion-item>
+
+  </ion-list>
+
+</ion-content>
+
+<ion-footer>
+  <ion-button size="large" color="warning" [disabled]="button" (click)="sendMessage('Otro problema: ')" expand="full">Enviar</ion-button>
+</ion-footer>

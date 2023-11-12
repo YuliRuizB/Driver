@@ -1,0 +1,8 @@
+{
+  "name": "driver",
+  "integrations": {
+    "cordova": {},
+    "capacitor": {}
+  },
+  "type": "angular"
+}

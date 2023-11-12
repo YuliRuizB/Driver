@@ -1,0 +1,112 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Actividades</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Actividades</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div *ngIf="loading">
+    <ion-list>
+      <ion-list-header>
+        <ion-label>
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let i of [1,2,3]">
+        <ion-label>
+          <h2>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h2>
+          <p>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+        <ion-note slot="end">
+          <ion-skeleton-text animated style="width: 10%"></ion-skeleton-text>
+        </ion-note>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <div *ngIf="!loading && events">
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Actividades planeadas</ion-label>
+      </ion-list-header>
+      <div *ngFor="let event of events">
+        <ion-list-header>
+          <ion-label>{{ event.key }}</ion-label>
+        </ion-list-header>
+        <ng-container *ngFor="let p of event.items">
+
+          <ion-item-sliding [disabled]="!!p.isRejected" #slide>
+            <ion-item [disabled]="!!p.isRejected" [attr.track]=" p.isTaskIn ? 'taskIn' : 'taskOut'"
+              [routerLink]="['/main/details/',p.id, p.customerId]" routerLinkActive="router-link-active">
+              <ion-label>
+                <h2 *ngIf="p.isTaskIn && !p.isTaskOut">{{ p.name }} &nbsp;<ion-icon name="arrow-forward-outline">
+                  </ion-icon>
+                  &nbsp;{{ p.customerName }}</h2>
+                <h2 *ngIf="!p.isTaskIn && p.isTaskOut">{{ p.customerName }} &nbsp;<ion-icon
+                    name="arrow-forward-outline">
+                  </ion-icon>&nbsp;{{ p.name }}</h2>
+                <h2 *ngIf="p.isTaskIn && p.isTaskOut">{{ p.customerName }} &nbsp;<ion-icon name="sync-outline">
+                  </ion-icon>
+                  &nbsp;{{ p.name }}</h2>
+                <h2 *ngIf="!p.isTaskIn && !p.isTaskOut">{{ p.customerName }} &nbsp;<ion-icon name="help-outline">
+                  </ion-icon>
+                  &nbsp;{{ p.name }}</h2>
+                <p>Programa {{ p.program == 'M' ? 'Mete' : 'Saca' }}, turno de {{ p.round }}</p>
+                <p>Unidad {{ p.vehicleName }}</p>
+                <p>Confirmación:
+                  <span class="ion-text-wrap">{{ (p.driverConfirmationAt).toDate() | date: 'h:mm B' }}
+                  </span>
+                </p>
+                <!-- <p>{{ formatDistanceDate(p.startAt) }}</p> -->
+              </ion-label>
+              <ion-note slot="end" *ngIf="!p.isRejected">
+                <h2 class="ion-no-margin">{{ (p.time).toDate() | date: 'h:mm' }}</h2>
+                <p class="ion-text-center ion-no-padding ion-no-margin" style="margin-top: -5px;">{{ (p.time).toDate() | date: 'a' }}</p>
+              </ion-note>
+              <ion-chip *ngIf="!!p.isRejected" color="medium">
+                <ion-icon name="close"></ion-icon>
+                <ion-label>Rechazado</ion-label>
+              </ion-chip>
+            </ion-item>
+            <ion-item-options side="end">
+              <ion-item-option (click)="showActionSheetWithOptions(p, slide)">Acciones</ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ng-container>
+      </div>
+    </ion-list>
+  </div>
+
+
+  <div *ngIf="!loading && program.length == 0">
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Más tarde</ion-label>
+      </ion-list-header>
+      <ion-item [attr.track]="'noresults'">
+        <ion-label>
+          <h2>Sin información</h2>
+          <p>No hay más información para mostrar</p>
+        </ion-label>
+        <ion-note slot="end"></ion-note>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <ion-item lines="none">
+    <ion-label color="medium" class="ion-text-center">{{ programActivities }} resultado(s)</ion-label>
+  </ion-item>
+</ion-content>

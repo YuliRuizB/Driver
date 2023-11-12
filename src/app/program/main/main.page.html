@@ -1,0 +1,271 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Hoy</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Hoy</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div *ngIf="loading">
+    <ion-card color="light">
+      <ion-card-header>
+        <ion-grid>
+          <ion-row class="ion-align-items-center">
+            <ion-col>
+              <ion-label class="ion-text-center">
+                <h1>
+                  <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+                </h1>
+                <p>
+                  <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
+                </p>
+              </ion-label>
+            </ion-col>
+            <ion-col class="ion-align-self-center ion-text-center">
+              <ion-icon size="large" color="light" name="arrow-forward-outline"></ion-icon>
+            </ion-col>
+            <ion-col>
+              <ion-label class="ion-text-center">
+                <h1>
+                  <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+                </h1>
+                <p>
+                  <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
+                </p>
+              </ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item class="ion-no-padding" lines="none" color="light">
+          <ion-label>
+            <h2>
+              <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+            </h2>
+            <p>
+              <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+            </p>
+          </ion-label>
+          <ion-note color="light" slot="end" size="large">
+            <ion-icon name="play" color="light" slot="start"></ion-icon>
+            <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text>
+          </ion-note>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  <div *ngFor="let p of featuredProgram">
+    <ion-card button [disabled]="!!p.isRejected" (click)="showActionSheetWithOptions(p)" [color]="!!p.isLive ? 'success': !!p.isWithTrouble ? 'danger':'primary'">
+      <ion-card-header>
+        <ion-card-subtitle *ngIf="!p.isRejected">A continuación</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-header>
+        <ion-grid>
+          <ion-row class="ion-align-items-center">
+            <ion-col>
+              <ion-label class="ion-text-center">
+                <div *ngIf="p.isTaskIn && !p.isTaskOut">
+                  <h1>{{p.name }}</h1>
+                  <p>{{ (p.time).toDate() | date: 'hh:mm a' }}</p>
+                </div>
+                <div *ngIf="p.isTaskIn && p.isTaskOut">
+                  <h1>{{p.name }}</h1>
+                  <p>{{ (p.time).toDate() | date: 'hh:mm a' }}</p>
+                </div>
+                <div *ngIf="!p.isTaskIn && p.isTaskOut">
+                  <h1>{{p.customerName }}</h1>
+                  <p>{{ (p.time).toDate() | date: 'hh:mm a' }}</p>
+                </div>
+              </ion-label>
+            </ion-col>
+            <ion-col class="ion-align-self-center ion-text-center">
+              <ion-icon *ngIf="p.isTaskIn != p.isTaskOut" size="large" name="arrow-forward-outline"></ion-icon>
+              <ion-icon *ngIf="p.isTaskIn && p.isTaskOut" size="large" name="sync-outline"></ion-icon>
+              <ion-icon *ngIf="!p.isTaskIn && !p.isTaskOut" size="large" name="help-outline"></ion-icon>
+            </ion-col>
+            <ion-col>
+              <ion-label class="ion-text-center">
+                <div *ngIf="p.isTaskIn && !p.isTaskOut">
+                  <h1>{{p.customerName }}</h1>
+                  <p>{{ (p.endAt).toDate() | date: 'hh:mm a' }}</p>
+                </div>
+                <div *ngIf="p.isTaskIn && p.isTaskOut">
+                  <h1>{{p.customerName }}</h1>
+                  <p>{{ (p.endAt).toDate() | date: 'hh:mm a' }}</p>
+                </div>
+                <div *ngIf="!p.isTaskIn && p.isTaskOut">
+                  <h1>{{p.name }}</h1>
+                  <p>&nbsp;</p>
+                </div>
+              </ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col size="10">
+              <ion-label class="ion-text-wrap">
+                <p>Programa {{ p.program == 'M' ? 'Mete' : 'Saca' }}, turno de {{ p.round }}</p>
+                <p>Unidad {{ p.vehicleName }}</p>
+                <p>Confirmar a más tardar a las {{ (p.driverConfirmationAt).toDate() | date: 'shortTime' }}</p>
+              </ion-label>
+            </ion-col>
+            <ion-col size="2" class="ion-align-self-end">
+              <ion-icon [name]="p.isLive ? 'stop' : 'play'" size="large"></ion-icon>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+      </ion-card-content>      
+    </ion-card>
+    <ion-list class="ion-no-margin ion-no-padding" *ngIf="(!p.isLive && !p.hasEnded) && (!!p.isRejected || !!p.isConfirmed || !!p.isWithTrouble)">
+      <ion-item lines="none">
+        <ion-chip *ngIf="!!p.isRejected" color="danger" slot="start">
+          <ion-icon name="close" color="danger"></ion-icon>
+          <ion-label>Rechazado</ion-label>
+        </ion-chip>
+        <ion-chip *ngIf="!!p.isConfirmed" color="success" slot="start">
+          <ion-icon name="checkmark-outline" color="success"></ion-icon>
+          <ion-label>Confirmado</ion-label>
+        </ion-chip>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <div *ngIf="loading">
+    <ion-list>
+      <ion-list-header>
+        <ion-label>
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let i of [1,2,3]">
+        <ion-label>
+          <h2>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h2>
+          <p>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+        <ion-note slot="end">
+          <ion-skeleton-text animated style="width: 10%"></ion-skeleton-text>
+        </ion-note>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <div *ngIf="!loading && program.length > 0">
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Más tarde</ion-label>
+      </ion-list-header>
+      <div *ngFor="let p of program">
+        <ion-item-sliding [disabled]="!!p.isRejected" #slide>
+        <ion-item [disabled]="!!p.isRejected" [attr.track]=" p.isTaskIn ? 'taskIn' : 'taskOut'" [routerLink]="['/main/details/',p.id, p.customerId]" routerLinkActive="router-link-active">
+          <ion-label>
+            <h2 *ngIf="p.isTaskIn && !p.isTaskOut">{{ p.name }} &nbsp;<ion-icon name="arrow-forward-outline"></ion-icon>
+              &nbsp;{{ p.customerName }}</h2>
+            <h2 *ngIf="!p.isTaskIn && p.isTaskOut">{{ p.customerName }} &nbsp;<ion-icon name="arrow-forward-outline">
+              </ion-icon>&nbsp;{{ p.name }}</h2>
+            <h2 *ngIf="p.isTaskIn && p.isTaskOut">{{ p.customerName }} &nbsp;<ion-icon name="sync-outline"></ion-icon>
+              &nbsp;{{ p.name }}</h2>
+            <h2 *ngIf="!p.isTaskIn && !p.isTaskOut">{{ p.customerName }} &nbsp;<ion-icon name="help-outline"></ion-icon>
+              &nbsp;{{ p.name }}</h2>
+            <p>Programa {{ p.program == 'M' ? 'Mete' : 'Saca' }}, turno de {{ p.round }}</p>
+            <p>Unidad {{ p.vehicleName }}</p>
+            <p>Confirmación: {{ (p.driverConfirmationAt).toDate() | date: 'hh:mm B' }}</p>
+          </ion-label>
+          <ion-note slot="end" *ngIf="!p.isRejected">
+            <h2 class="ion-no-margin">{{ (p.time).toDate() | date: 'h:mm' }}</h2>
+            <p class="ion-text-center ion-no-padding ion-no-margin" style="margin-top: -5px;">{{ (p.time).toDate() | date: 'a' }}</p>
+          </ion-note>
+          <ion-chip *ngIf="!!p.isRejected" color="medium">
+            <ion-icon name="close"></ion-icon>
+            <ion-label>Rechazado</ion-label>
+          </ion-chip>
+        </ion-item>
+        {{this.optionSelected}}
+        <ion-item-options side="end">
+          <ion-item-option (click)="showActionSheetWithOptions(p, slide)">Acciones</ion-item-option>
+         
+        </ion-item-options>
+      </ion-item-sliding>
+      </div>
+    </ion-list>
+  </div>
+
+
+  <div *ngIf="!loading && program.length == 0">
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Más tarde</ion-label>
+      </ion-list-header>
+      <ion-item [attr.track]="'noresults'">
+        <ion-label>
+          <h2>Sin información</h2>
+          <p>No hay más información para mostrar</p>
+        </ion-label>
+        <ion-note slot="end"></ion-note>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <div *ngIf="!loading && finishedProgram.length > 0">
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Finalizados</ion-label>
+        <ion-button [routerLink]="['/main/historic']" routerLinkActive="router-link-active" >Ver historial</ion-button>
+      </ion-list-header>
+      <div *ngFor="let p of finishedProgram">
+        <ion-item (click)="showActionSheetWithOptions(p)">
+          <ion-label>
+            <h2 *ngIf="p.isTaskIn && !p.isTaskOut">{{ p.name }} &nbsp;<ion-icon name="arrow-forward-outline"></ion-icon>
+              &nbsp;{{ p.customerName }}</h2>
+            <h2 *ngIf="!p.isTaskIn && p.isTaskOut">{{ p.customerName }} &nbsp;<ion-icon name="arrow-forward-outline">
+              </ion-icon>&nbsp;{{ p.name }}</h2>
+            <h2 *ngIf="p.isTaskIn && p.isTaskOut">{{ p.customerName }} &nbsp;<ion-icon name="sync-outline"></ion-icon>
+              &nbsp;{{ p.name }}</h2>
+            <h2 *ngIf="!p.isTaskIn && !p.isTaskOut">{{ p.customerName }} &nbsp;<ion-icon name="help-outline"></ion-icon>
+              &nbsp;{{ p.name }}</h2>
+            <p>Programa {{ p.program == 'M' ? 'Mete' : 'Saca' }}, turno de {{ p.round }}</p>
+            <p>Unidad {{ p.vehicleName }}</p>
+            <p>Confirmación: {{ (p.driverConfirmationAt).toDate() | date: 'shortTime' }}</p>
+          </ion-label>
+          <ion-note slot="end">
+            <h2>{{ (p.startAt).toDate() | date: 'shortTime' }}</h2>
+          </ion-note>
+        </ion-item>
+      </div>
+    </ion-list>
+  </div>
+
+
+  <div *ngIf="!loading && finishedProgram.length == 0">
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Finalizados</ion-label>
+      </ion-list-header>
+      <ion-item [attr.track]="'noresults'">
+        <ion-label>
+          <h2>Sin información</h2>
+          <p>No hay más información para mostrar</p>
+        </ion-label>
+        <ion-note slot="end"></ion-note>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>

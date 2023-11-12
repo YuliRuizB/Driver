@@ -1,0 +1,78 @@
+<ion-header class="ion-no-border" translucent="true">
+  <ion-toolbar>
+    <!--
+      <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+  -->
+    <ion-title></ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-margin">
+  <form (ngSubmit)="signUpWarning()" [formGroup]="signupForm">
+    <div class="banner">
+      <img src="assets/img/logostudent.png">
+      <h2>Afíliate a la comunidad<br>
+        <span>Bus2U</span>
+      </h2>
+    </div>
+
+    <div class="form">
+      <ion-list lines="none">
+        <ion-item>
+          <ion-icon slot="start" name="contact"></ion-icon>
+          <ion-input value="" formControlName="firstName" type="text" placeholder="Nombre(s)" required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-icon slot="start" name="contact"></ion-icon>
+            <ion-input value="" formControlName="lastName" type="text" placeholder="Apellido(s)" required>
+            </ion-input>
+          </ion-item>
+
+        <ion-item>
+          <ion-icon slot="start" name="mail"></ion-icon>
+          <ion-input value="" formControlName="email" type="email" placeholder="Correo electrónico" required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon slot="start" name="bookmarks"></ion-icon>
+          <ion-input value="" formControlName="studentId" type="text" placeholder="Matrícula" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon slot="start" name="business"></ion-icon>
+          <ion-label>
+              Escuela/Empresa
+          </ion-label>
+          <ion-select cancelText="Cancelar" (ionChange)="onChange($event)" okText="Seleccionar" placeholder="Selecciona una" formControlName="customerId">
+            <ion-select-option *ngFor="let c of customersList" value="{{c.id}}">{{ c.name }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon slot="start" name="finger-print"></ion-icon>
+          <ion-input type="password" clearInput value="" formControlName="password" placeholder="Contraseña 8 dígitos" required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon slot="start" name="finger-print"></ion-icon>
+          <ion-input type="password" clearInput value="" formControlName="verifyPassword"
+            placeholder="Confirmar contraseña 8 dígitos" required>
+          </ion-input>
+        </ion-item>
+
+      </ion-list>
+      <ion-button expand="block" size="large" class="" type="submit" [disabled]="!signupForm.valid">Registrarme</ion-button>
+    </div>
+  </form>
+</ion-content>
+<ion-footer class="ion-no-border">
+    <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+  <h4 class="ion-text-center" (click)="backToSignIn()">¿Ya tienes una cuenta?
+    <span>Ingresar</span></h4>
+</ion-footer>

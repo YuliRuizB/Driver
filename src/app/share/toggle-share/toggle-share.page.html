@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button text="atrás" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Compartir mi actividad
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding ion-margin">
+
+  <ion-list *ngIf="loading">
+    <ion-list-header>
+      <ion-label>
+        <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
+      </ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let i of [1,2,3,4]">
+      <ion-thumbnail slot="end">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-thumbnail>
+      <ion-label>
+        <h2 class="ion-text-wrap">
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </h2>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-list-header>
+      <ion-label>
+        Quienes pueden ver mis actividades
+      </ion-label>
+    </ion-list-header>
+    <div *ngIf="!loading && parents.length > 0">
+      <ion-item *ngFor="let p of parents">
+        <ion-avatar slot="start">
+          <img [src]="p.imageUrl ? p.imageUrl : 'assets/img/male_avatar.png'">
+        </ion-avatar>
+        <ion-label>
+          {{ p.name }}
+        </ion-label>
+        <ion-toggle color="success" [checked]="p.canGetNotifications" (ionChange)="toggleNotification(p)"></ion-toggle>
+      </ion-item>
+    </div>
+
+    <div *ngIf="!loading && parents.length === 0">
+      <ion-item>
+        <ion-label>
+          No hay información para mostrar
+        </ion-label>
+      </ion-item>
+    </div>
+  </ion-list>
+
+
+</ion-content>
+
+<ion-footer>
+
+</ion-footer>

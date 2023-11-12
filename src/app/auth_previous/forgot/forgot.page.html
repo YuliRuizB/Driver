@@ -1,0 +1,49 @@
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-title>signin</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+</ion-content> -->
+
+<ion-header class="ion-no-border">
+    <ion-toolbar>
+      <!--
+      <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+  -->
+      <ion-title></ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content class="ion-margin">
+    <form (ngSubmit)="sendPasswordResetEmail()" [formGroup]="resetPasswordForm">
+      <div class="banner">
+        <img src="assets/img/logostudent.png">
+        <h2>¿Olvidaste tu <br>
+          <span>contraseña?</span>
+        </h2>
+        <ion-text color="medium">
+          <h5><small>No te preocupes, te podemos enviar las instrucciones para que recuperes tu contraseña. ¿A qué cuenta de correo electrónico te la enviamos?</small></h5>
+        </ion-text>
+      </div>
+  
+      <div class="form">
+        <ion-list lines="none">
+          <ion-item>
+            <ion-icon slot="start" name="mail"></ion-icon>
+            <ion-input clearInput value="" formControlName="email" type="email" placeholder="Correo electrónico" required></ion-input>
+          </ion-item>
+          
+        </ion-list>
+        <ion-button expand="block" class="" size="large" type="submit" [disabled]="!resetPasswordForm.valid">Recuperar contraseña</ion-button>
+      </div>
+    </form>
+  </ion-content>
+  <ion-footer class="ion-no-border">
+      <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+    <h4 (click)="gotoSignin()"  text-center>¿Ya tienes una cuenta? <span>Ingresar</span></h4>
+  </ion-footer>

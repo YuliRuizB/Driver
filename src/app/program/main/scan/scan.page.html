@@ -1,0 +1,164 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Scannear pases</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="scanQRCode()">
+        <ion-icon size="large" name="qr-code-outline" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div *ngIf="loading">
+    <ion-list>
+      <ion-list-header>
+        <ion-label>
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let i of [1,2,3]">
+        <ion-note><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-note>
+        <ion-label>
+          <h2>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h2>
+          <p>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+        <ion-note slot="end">
+          <ion-skeleton-text animated style="width: 10%"></ion-skeleton-text>
+        </ion-note>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <div *ngIf="!loading && auditLog.length == 0">
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Pases escaneados</ion-label>
+      </ion-list-header>
+      <ion-item [attr.track]="'noresults'">
+        <ion-label>
+          <h2>Sin información</h2>
+          <p>No hay más información para mostrar</p>
+        </ion-label>
+        <ion-note slot="end"></ion-note>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <ion-list *ngIf="!loading && auditLog.length > 0">
+    <ion-list-header>
+      <ion-label>
+        Pasajeros: {{ allowedOnBoard }} / {{ program.capacity }}
+      </ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let a of auditLog" [attr.track]="a.allowedOnBoard ? 'access': 'abuse'" [routerLink]="['/main/event-details', a.id]" routerLinkActive="router-link-active">
+      <ion-icon slot="start" [name]="a.isCredential ? 'card': 'qr-code'" [color]="a.allowedOnBoard ? 'access': 'abuse'">
+      </ion-icon>
+      <ion-label>
+        <h2>{{ a.studentName }}</h2>
+        <p>{{ a.studentId }}</p>
+        <!-- <p class="ion-text-wrap">{{ a.description }}</p> -->
+      </ion-label>
+      <ion-note slot="end">
+        <h4>{{ a.created.toDate() | date: 'shortTime' }}</h4>
+      </ion-note>
+    </ion-item>
+  </ion-list>
+
+  <div id="close-scanner-button" text-center>
+      <!-- <ion-button color="primary" (click)="validateQRCode('FyXKSXsUbYNtAbWL7zZ66o2f1M92,pQijCHOM1t9IIbT46602,C')">dummy scan card</ion-button>
+      <ion-button color="primary" (click)="validateQRCode('FyXKSXsUbYNtAbWL7zZ66o2f1M92,ekDrKWk43nJoqYrRHKX6')">dummy scan QR</ion-button> -->
+    <div *ngIf="loading">
+      <ion-list>
+        <ion-list-header>
+          <ion-label>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </ion-label>
+        </ion-list-header>
+        <ion-item *ngFor="let i of [1,2,3]">
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          <ion-label>
+            <h2>
+              <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+            </h2>
+            <p>
+              <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+            </p>
+          </ion-label>
+          <ion-note slot="end">
+            <ion-skeleton-text animated style="width: 10%"></ion-skeleton-text>
+          </ion-note>
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <div *ngIf="!loading && auditLog.length == 0">
+      <ion-list>
+        <ion-list-header>
+          <ion-label>Pases escaneados</ion-label>
+        </ion-list-header>
+        <ion-item [attr.track]="'noresults'">
+          <ion-label>
+            <h2>Sin información</h2>
+            <p>No hay más información para mostrar</p>
+          </ion-label>
+          <ion-note slot="end"></ion-note>
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <ion-list *ngIf="!loading && auditLog.length > 0">
+      <ion-list-header>
+        <ion-label>
+          Pasajeros: {{ allowedOnBoard }} / {{ program.capacity }}
+        </ion-label>
+        <ion-button (click)="closeScanner(true)">Ver todos</ion-button>
+      </ion-list-header>
+      <ion-item *ngFor="let a of auditLog" [attr.track]="a.allowedOnBoard ? 'access': 'abuse'" (click)="goEventDetails(a.id)">
+        <ion-icon slot="start" [name]="a.isCredential ? 'card': 'qr-code'" [color]="a.allowedOnBoard ? 'access': 'abuse'">
+        </ion-icon>
+        <ion-label>
+          <h2>{{ a.studentName }}</h2>
+          <p>{{ a.studentId }}</p>
+          <!-- <p class="ion-text-wrap">{{ a.description }}</p> -->
+        </ion-label>
+        <ion-note slot="end">
+          <h4>{{ a.created.toDate() | date: 'shortTime' }}</h4>
+        </ion-note>
+      </ion-item>
+    </ion-list>
+  </div>
+
+</ion-content>
+<ion-footer>
+  <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+  <div id="close-scanner-button" text-center>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="3">
+          <ion-button size="large" expand="block" (click)="toggleCamera()" color="light">
+            <ion-icon name="camera-reverse-outline"></ion-icon>
+        </ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button size="large" expand="block" (click)="closeScanner(true)" color="primary">
+            Cerrar
+        </ion-button>
+        </ion-col>
+        <ion-col size="3">
+          <ion-button size="large" expand="block" (click)="toggleLight()" [color]="light ? 'primary' : 'light'">
+            <ion-icon name="bulb-outline"></ion-icon>
+        </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+</div>
+</ion-footer>

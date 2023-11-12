@@ -1,0 +1,38 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="modalDismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="ion-padding">
+      <ion-label class="ion-text-wrap">
+        <h2>{{ bus.driver }}</h2>
+        <p>{{ bus.name }} {{ bus.routeDescription }}</p>
+      </ion-label>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+  <div class="map" id="device_map"></div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar color="medium">
+    <ion-title>Ruta</ion-title>
+  </ion-toolbar>
+  <div scrollY="true" id="myFixZone">
+    <ion-list no-lines>
+      <ion-item class="disable" *ngFor="let i of [1,2,3,4,5,6]">
+        <h4 item-start text-start>12:20 pm</h4>
+        <div class="bus_station">
+          S
+        </div>
+        <h3 class="d-flex">
+          <span class="station_name"> Soccer Stadium st.</span>
+        </h3>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-footer>

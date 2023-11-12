@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Promociones</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <div *ngIf="promotions.length > 0 && !loading">
+    <ion-card button="true" *ngFor="let p of promotions" (click)="presentModal(p)">
+      <img [src]="p.imageUrl ? p.imageUrl : 'assets/img/madison.jpg'" />
+      <ion-card-header>
+        <ion-card-subtitle>{{ p.category }}</ion-card-subtitle>
+        <ion-card-title>{{ p.name }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        {{ p.description }}
+      </ion-card-content>
+      <ion-item lines="none">
+        <ion-icon name="calendar-outline" color="primary" slot="start"></ion-icon>
+        <ion-label class="ion-text-wrap">
+          <p>Promoción válida del {{ (p.validFrom).toDate() | date: 'mediumDate' }} al {{ (p.validTo).toDate() | date: 'mediumDate' }}</p>
+        </ion-label>
+      </ion-item>
+    
+      <ion-item lines="none">
+        <ion-icon name="information-circle-outline" color="primary" slot="start"></ion-icon>
+        <ion-label>Términos y condiciones</ion-label>
+      </ion-item>
+    </ion-card>
+  </div>
+
+  <div *ngIf="promotions.length == 0 && loading">
+    <ion-card *ngFor="let i of [1,2,3]">
+      <ion-card-subtitle>
+        <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+      </ion-card-subtitle>
+      <ion-card-title>
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-card-title>
+      <ion-card-content>
+        <ion-skeleton-text animated style="width: 88%"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div *ngIf="promotions.length == 0 && !loading" class="ion-margin">
+    <ion-img src="assets/img/notification.png"></ion-img>
+    <ion-text class="ion-text-center" color="dark">
+      <h1>No hay promociones en este momento</h1>
+    </ion-text>
+    <ion-text class="ion-text-center" color="medium">
+      <h3>Estamos preparando cosas especiales para tí.</h3>
+    </ion-text>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+</ion-footer>

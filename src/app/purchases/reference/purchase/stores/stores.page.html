@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar color="tertiary">
+    <ion-buttons slot="start">
+      <ion-back-button text="atrás" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Tiendas afiliadas
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <h3>Esta es la lista de tiendas afiliadas al sistema de pagos Paynet</h3>
+
+  <ion-list>
+  
+    <ion-item *ngFor="let store of participantStores">
+      <ion-icon slot="start" color="success" size="large" name="business"></ion-icon>
+      <ion-label class="ion-text-wrap">{{ store.name }}</ion-label>
+    </ion-item>
+
+  </ion-list>
+
+  <ion-list lines="none">
+    <ion-item>
+      <ion-label>
+        <small>Transacciones realizadas vía</small>
+      </ion-label>
+      <ion-img src="assets/img/logo_paynet1.png" style="width:120px;"></ion-img>
+    </ion-item>
+  </ion-list>
+
+  <ion-text>Para cualquier duda, por favor llamar al teléfono (55) 5351 7371 en horario de 8am a 9pm de lunes a domingo</ion-text>
+
+</ion-content>

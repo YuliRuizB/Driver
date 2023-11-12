@@ -1,0 +1,17 @@
+$categories: (
+  round: var(--ion-color-warning),
+  route: var(--ion-color-warning),
+  access: var(--ion-color-success),
+  abuse: var(--ion-color-danger),
+  duplicate: var(--ion-color-danger),
+  expired: var(--ion-color-danger)
+);
+
+@each $track, $value in map-remove($categories) {
+  ion-item[track='#{$track}'] ion-label {
+    border-left: 2px solid $value;
+    padding-left: 10px;
+  }
+}
+
+

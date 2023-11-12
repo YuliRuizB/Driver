@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Selecciona una parada</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-slides #slides pager="true" [options]="slideOpts" (ionSlideDidChange)="ionSlideDidChange($event)">
+    <ion-slide *ngFor="let route of routes">
+      <ion-card>
+        <img [src]="route.imageUrl ? route.imageUrl : 'https://firebasestorage.googleapis.com/v0/b/bus2u-dev.appspot.com/o/routes%2Fimages%2Fruta-juarez.png?alt=media&token=e915bbf2-7f0c-49bc-b9a6-db0056426427' ">
+        <ion-card-header>
+          <ion-card-subtitle>{{ route.description }}</ion-card-subtitle>
+          <ion-card-title>{{ route.name }}</ion-card-title>
+        </ion-card-header>
+      </ion-card>
+    </ion-slide>
+    
+  </ion-slides>
+</ion-header>
+
+<ion-content>
+
+  
+
+  <ion-list>
+    <ion-list-header>
+      Paradas disponibles
+    </ion-list-header>
+    <ion-item *ngFor="let sp of routeStops" (click)="getSelectedStopPoint(sp)">
+      <ion-thumbnail slot="start">
+        <img [src]="sp.imageUrl">
+      </ion-thumbnail>
+      <ion-label class="ion-text-wrap">
+        <h2>{{ sp.name }}</h2>
+        <p>{{ sp.description }}</p>
+        <p>horarios:</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-text class="ion-text-center">
+    <ion-label class="ion-text-center" color="medium"><h3>{{ routeStops.length }} registros</h3></ion-label>
+  </ion-text>
+</ion-content>
+
+<ion-footer>
+  <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+</ion-footer>

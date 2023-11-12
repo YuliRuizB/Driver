@@ -1,0 +1,64 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="ion-no-padding">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button [routerLink]="['/notifications/reminders']" routerLinkActive="router-link-active">
+        <ion-icon color="primary" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Recordatorios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list *ngIf="remindersList.length > 0">
+    <ion-list-header>
+      Recordatorios
+    </ion-list-header>
+
+    <ion-item-sliding #slidingItem *ngFor="let reminder of remindersList">
+
+      <ion-item>
+        <ion-icon slot="start" [color]="reminder.active ? 'success': 'medium'" [name]="reminder.active ? 'play' : 'pause'"></ion-icon>
+        <ion-label class="ion-text-wrap">{{ reminder.minutes }} minutos antes turno de {{ reminder.round }} en {{ reminder.stationName }}
+          {{ reminder.stationDescription }}
+          <p>
+            <ion-badge style="margin-right: 5px;" [color]="reminder.active ? 'success': 'medium'" *ngFor="let day of reminder.days">{{ translatedDays[day] }}</ion-badge>
+          </p>
+        </ion-label>
+        <ion-icon slot="end" (click)="moreOptions(slidingItem, reminder)" [color]="reminder.active ? 'dark': 'medium'"
+          name="more"></ion-icon>
+      </ion-item>
+
+      <ion-item-options side="end">
+        <ion-item-option color="danger" (click)="deleteReminder(slidingItem, reminder)">
+          <ion-icon slot="top" name="trash"></ion-icon>
+          <small>Borrar</small>
+        </ion-item-option>
+        <ion-item-option color="success" (click)="toggleActive(slidingItem, reminder)" *ngIf="!reminder.active">
+          <ion-icon slot="top" name="play"></ion-icon>
+          <small>Activar</small>
+        </ion-item-option>
+        <ion-item-option color="warning" (click)="toggleActive(slidingItem, reminder)" *ngIf="reminder.active">
+          <ion-icon slot="top" name="pause"></ion-icon>
+          <small>Desactivar</small>
+        </ion-item-option>
+      </ion-item-options>
+
+    </ion-item-sliding>
+  </ion-list>
+
+  <div class="ion-padding" *ngIf="remindersList == 0">
+    <ion-img src="assets/img/illustration-2.png"></ion-img>
+    <ion-text class="ion-text-center">
+      <h2>Aún no tienes ningún recordatorio</h2>
+    </ion-text>
+    <ion-button expand="block" [routerLink]="['/notifications/reminders']" routerLinkActive="router-link-active">
+      Crear uno
+    </ion-button>
+  </div>
+  
+</ion-content>

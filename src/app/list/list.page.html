@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      List
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!-- <ion-content>
+  <ion-list>
+    <ion-item *ngFor="let item of items">
+      <ion-icon [name]="item.icon" slot="start"></ion-icon>
+      {{item.title}}
+      <div class="item-note" slot="end">
+        {{item.note}}
+      </div>
+    </ion-item>
+  </ion-list>
+  
+    <div *ngIf="selectedItem" padding>
+      You navigated here from <b>{{selectedItem.title }}</b>
+    </div>
+ 
+</ion-content> -->
+
+<ion-content class="ion-padding">
+  <ion-slides [options]="sliderConfig">
+    <ion-slide *ngFor="let card of cards">
+
+
+      <ion-grid [class.cardON]="card.state=='ON'" [class.cardOFF]="card.state=='OFF'">
+        <ion-row>
+          <ion-col class="state">
+            <div class="msg">
+              <span [class.ON]="card.state=='ON'" [class.OFF]="card.state=='OFF'"></span> Tarjeta {{card.state}}
+            </div>
+          </ion-col>
+          <ion-col class="logo">
+            <img class="brand" [src]="card.logo">
+          </ion-col>
+        </ion-row>
+        <!-- <ion-row>
+          <ion-col class="chip">
+            <img src="assets/img/chip.png">
+          </ion-col>
+        </ion-row> -->
+        <ion-row class="digits">
+          <ion-col class="number">
+            <span class="dot"></span> <span class="dot"></span> <span class="dot"></span> <span class="dot"></span>
+          </ion-col>
+          <ion-col class="number">
+            <span class="dot"></span> <span class="dot"></span> <span class="dot"></span> <span class="dot"></span>
+          </ion-col>
+          <ion-col class="number">
+            <span class="dot"></span> <span class="dot"></span> <span class="dot"></span> <span class="dot"></span>
+          </ion-col>
+          <ion-col class="number">
+            {{card.a}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="date">
+            Expira: {{card.expires}}
+          </ion-col>
+          <ion-col class="bank">
+            {{card.bank}}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+
+    </ion-slide>
+  </ion-slides>
+  
+</ion-content>

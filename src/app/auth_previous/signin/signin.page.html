@@ -1,0 +1,60 @@
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-title>signin</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+</ion-content> -->
+
+<ion-header class="ion-no-border">
+    <ion-toolbar>
+      <!--
+      <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+  -->
+      <ion-title></ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content class="ion-margin">
+    <form (ngSubmit)="signin()" [formGroup]="loginForm">
+      <div class="banner">
+        <img src="assets/img/logostudent.png">
+        <h2>Bienvenidos a <br>
+          <span>Bus2U</span>
+        </h2>
+      </div>
+  
+      <div class="form">
+        <ion-list lines="none">
+          <ion-item>
+            <ion-icon slot="start" name="mail"></ion-icon>
+            <ion-input clearInput value="" formControlName="email" type="email" placeholder="Correo electrónico" required></ion-input>
+          </ion-item>
+          
+          <ion-item>
+            <ion-icon slot="start" name="finger-print"></ion-icon>
+            <ion-input type="password" clearInput value="" formControlName="password" placeholder="Contraseña" required></ion-input>
+          </ion-item>
+          
+        </ion-list>
+        <h4 class="ion-margin ion-text-end" [routerLink]="['/auth/forgot']" routerLinkActive="router-link-active" >¿olvidaste tu contraseña?</h4>
+        <h5 [routerLink]="['/auth/signup']" routerLinkActive="router-link-active"  text-center>
+          ¿Usuario Nuevo?
+          <span>
+            <ion-text color="primary">
+              Regístrate
+            </ion-text>
+          </span>
+        </h5>
+      </div>
+      
+    </form>
+  </ion-content>
+  <ion-footer class="ion-no-border">
+      <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+      <ion-button expand="block" class="" size="large" type="button" (click)="signin()" strong="true" [color]="loginForm.valid ? 'primary' : 'medium'" [fill]="loginForm.valid ? 'solid' : 'outline'" [disabled]="!loginForm.valid">Ingresar</ion-button>
+  </ion-footer>

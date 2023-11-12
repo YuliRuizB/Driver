@@ -1,0 +1,67 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="ion-no-padding">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>En Línea</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToScanPage()">
+        <ion-icon size="large" name="camera-outline" color="primary"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-searchbar style="opacity: 0.1;" #searchInput autocomplete="off" placeholder="código" searchIcon="search" debounce="500" autocorrect="off" inputmode="text" [(ngModel)]="scannedText" (ngModelChange)="onSearchInputDebounced($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+
+  <app-shared-navigation-map></app-shared-navigation-map>
+
+  <ion-toolbar>
+    <ion-slides [options]="sliderConfig" #slides (ionSlideDidChange)=flyToSlider(slides)>
+      <ion-slide *ngIf="stopPoints.length == 0">
+        <ion-card>
+          <ion-item lines="none">
+            <ion-icon color="success" name="information-circle-outline" size="large" slot="start"></ion-icon>
+            <ion-label class="ion-text-wrap">
+              <p>Para más información</p>
+              <p>selecciona una ruta</p>
+            </ion-label>
+          </ion-item>
+        </ion-card>
+      </ion-slide>
+      <ion-slide *ngFor="let stop of stopPoints">
+        <ion-card (click)="flyTo(stop)">
+          <ion-item lines="none">
+            <ion-thumbnail slot="start">
+              <img class="ion-no-padding" [src]="'assets/icon/pedestrians.svg'">
+            </ion-thumbnail>
+            <ion-label class="ion-text-wrap">
+              <h5>{{ stop.name }}</h5>
+              <p>{{ stop.description }}</p>
+              <div *ngIf="program && program.program == 'M'">
+                <p *ngIf="program && program.round == 'Día'">{{ stop.round1 }}</p>
+                <p *ngIf="program && program.round == 'Tarde'">{{ stop.round2 }}</p>
+              </div>
+            </ion-label>
+          </ion-item>
+        </ion-card>
+      </ion-slide>
+    </ion-slides>
+  </ion-toolbar>
+
+  <input type="text">
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="showRouteOptions()">
+      <ion-icon name="options-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+    <ion-fab-button (click)="onScanButtonClicked()" [color]="scanning? 'success' : 'primary' ">
+      <ion-icon [name]="scanning? 'scan' : 'scan-outline'" ></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

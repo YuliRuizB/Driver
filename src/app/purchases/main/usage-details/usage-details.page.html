@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-toolbar color="tertiary">
+    <ion-buttons slot="start">
+      <ion-back-button text="atrás" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Uso del pase
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+<ion-text>
+  <h3>Información detallada del uso del pase de abordar</h3>
+</ion-text>
+
+<ion-list *ngIf="loading">
+  <ion-list-header>
+    <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
+  </ion-list-header>
+    <ion-item *ngFor="let i of [1,2,3,4]">
+      <ion-thumbnail slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-thumbnail>
+      <ion-label>
+        <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        <h2 class="ion-text-wrap"><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></h2>
+        <p><ion-skeleton-text animated style="width: 20%"></ion-skeleton-text></p>
+        <p><ion-skeleton-text animated style="width: 20%"></ion-skeleton-text></p>
+      </ion-label>
+    </ion-item>
+</ion-list>
+
+  <ion-item *ngIf="activityLog.length == 0 && !loading">
+    <ion-icon name="information-circle" size="large" color="warning" slot="start"></ion-icon>
+    <ion-label class="ion-text-wrap">
+      <ion-text color="primary">
+        <h3>Sin información</h3>
+      </ion-text>
+      <ion-text color="medium">
+        <p>No hay movimientos registrados de este pase</p>
+      </ion-text>
+    </ion-label>
+  </ion-item>
+
+  <div *ngIf="activityLog.length > 0 && !loading">
+  <ion-item *ngFor="let log of activityLog">
+    <ion-icon [name]="log.icon" size="large" [color]="log.icon == 'warning' ? 'warning' : 'success'" slot="start"></ion-icon>
+    <ion-label class="ion-text-wrap">
+      <ion-text color="primary">
+        <h3>{{ setName(log.type) }}</h3>
+      </ion-text>
+      <ion-text color="medium">
+        <p>{{ log.description }}</p>
+        <p>Unidad {{ log.vehicle }} Conductor: {{ log.driver }}</p>
+        <p>{{ log.program == 'M' ? 'Entrada' : 'Salida' }}</p>
+        <p>{{ log.date | date: 'medium'}}</p>
+      </ion-text>
+    </ion-label>
+    <!-- <ion-button fill ="clear" slot="end" *ngIf="log.location">
+      <ion-icon name="pin"></ion-icon>
+    </ion-button> -->
+  </ion-item>
+</div>
+  
+</ion-content>

@@ -1,0 +1,26 @@
+ion-header ion-toolbar {
+    --background: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.95)), color-stop(5%, rgba(255, 255, 255, 0.95)), to(rgba(255, 255, 255, 0)));
+    --ion-color-base: transparent !important;
+    }
+  
+    ion-footer ion-toolbar {
+      --background: transparent;
+      --ion-color-base: transparent !important;
+      }
+    .header::after {
+      background-image: none;
+    }
+  
+    .map {
+      position : absolute; 
+      top : 0;
+      left : 0;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+      z-index: 1 !important;
+   }
+  
+   ion-card {
+     --background: white;
+   }

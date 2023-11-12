@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button text="atrás" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Mis referencias de pago
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list *ngIf="purchaseRequests && purchaseRequests.length == 0 && loading">
+    <ion-list-header>
+      <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
+    </ion-list-header>
+      <ion-item>
+        <ion-thumbnail slot="start">
+          <ion-skeleton-text animated></ion-skeleton-text>
+        </ion-thumbnail>
+        <ion-label>
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          <h2 class="ion-text-wrap"><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></h2>
+          <p><ion-skeleton-text animated style="width: 20%"></ion-skeleton-text></p>
+          <p><ion-skeleton-text animated style="width: 20%"></ion-skeleton-text></p>
+        </ion-label>
+      </ion-item>
+  </ion-list>
+
+  <ion-list *ngIf="purchaseRequests && purchaseRequests.length > 0">
+    <ion-list-header>
+      <ion-label>Referencia de pago</ion-label>
+    </ion-list-header>
+      <ion-item  *ngFor="let cr of purchaseRequests" (click)="payThisReference(cr)" [disabled]="isPastDue(cr.due_date)">
+        <ion-icon name="barcode" slot="start"></ion-icon>
+        <ion-label>
+          <ion-text color="primary">{{ cr.amount | currency: 'MXN' }}</ion-text>
+          <h2 class="ion-text-wrap">{{ cr.description }}</h2>
+          <p>Fecha límite: {{ cr.due_date | date:'medium' }}</p>
+          <p>{{ cr.status }}</p>
+        </ion-label>
+        <!-- <ion-chip slot="end" color="secondary">
+          <ion-label color="secondary">{{ cr.amount | currency: 'MXN' }}</ion-label>
+        </ion-chip> -->
+      </ion-item>
+      <!-- <ion-item-options side="end">
+        <ion-item-option (click)="payThisReference(cr)">Pagar</ion-item-option>
+        <ion-item-option color="danger" (click)="payThisReference(cr)">Eliminar</ion-item-option>
+      </ion-item-options> -->
+  </ion-list>
+
+  <ion-list lines="none">
+    <ion-list-header>
+      <ion-label>¿Necesitas información?</ion-label>
+    </ion-list-header>
+    <ion-item [routerLink]="['/reference/purchase/how-to-pay']" routerLinkActive="router-link-active" >Como realizar el pago</ion-item>
+    <ion-item [routerLink]="['/reference/purchase/cashier-instructions']" routerLinkActive="router-link-active" >Instrucciones para el cajero</ion-item>
+    <ion-item [routerLink]="['/reference/purchase/stores']" routerLinkActive="router-link-active" >Tiendas afiliadas</ion-item>
+    <ion-item [routerLink]="['/reference/purchase/locate-store-map']" routerLinkActive="router-link-active" >Buscar tienda más cercana</ion-item>
+    <ion-item [routerLink]="['/cards']" routerLinkActive="router-link-active" >Términos y condiciones del servicio</ion-item>
+  </ion-list>
+
+</ion-content>

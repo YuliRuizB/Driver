@@ -1,0 +1,198 @@
+<ion-header>
+  <ion-toolbar color="tertiary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="main" text="atrás"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Más información</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div *ngIf="loading">
+    <ion-list>
+      <ion-list-header>
+        <ion-label>
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let i of [1,2,3,4,5,6,7]">
+        <ion-label>
+          <h2>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h2>
+          <p>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+        <ion-note slot="end">
+          <ion-skeleton-text animated style="width: 10%"></ion-skeleton-text>
+        </ion-note>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <ion-list *ngIf="!loading">
+    <ion-list-header>
+      <ion-label>
+        Usuario
+      </ion-label>
+    </ion-list-header>
+    <ion-item [attr.track]="auditLog.allowedOnBoard ? 'access': 'abuse'">
+      <ion-icon slot="start" [name]="auditLog.isCredential ? 'card': 'qr-code'" [color]="auditLog.allowedOnBoard ? 'access': 'abuse'">
+      </ion-icon>
+      <ion-label>
+        <h2>{{ auditLog.studentName }}</h2>
+        <p>{{ auditLog.studentId }}</p>
+        <!-- <p class="ion-text-wrap">{{ auditLog.description }}</p> -->
+      </ion-label>
+      <ion-note slot="end">
+        <h4>{{ auditLog.created.toDate() | date: 'shortTime' }}</h4>
+      </ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p>Nombre del usuario</p>
+      </ion-label>
+      <ion-label slot="end">
+        <h2>{{ auditLog.studentName }}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p>Matrícula</p>
+      </ion-label>
+      <ion-label slot="end">
+        <h2>{{ auditLog.studentId }}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p>Identificación</p>
+      </ion-label>
+      <ion-label slot="end">
+        <h2>{{ auditLog.isCredential ? 'Credencial':'Pase de abordar' }}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p>Cliente</p>
+      </ion-label>
+      <ion-label slot="end">
+        <h2>{{ auditLog.customerName }}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p>Ruta</p>
+      </ion-label>
+      <ion-label slot="end">
+        <h2>{{ auditLog.routeName }}</h2>
+      </ion-label>
+    </ion-item>
+
+  </ion-list><ion-list *ngIf="!loading">
+    <ion-list-header>
+      <ion-label>
+        Detalles del evento
+      </ion-label>
+    </ion-list-header>
+
+    <ion-item>
+      <ion-label>
+        <p>Fecha</p>
+      </ion-label>
+      <ion-label slot="end" class="ion-text-wrap">
+        <h2>{{ auditLog.created.toDate() | date: 'medium' }}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p>Abordó la unidad</p>
+      </ion-label>
+      <ion-label slot="end">
+        <h2>{{ auditLog.allowedOnBoard ? 'Si':'No' }}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p>Mensaje al usuario</p>
+      </ion-label>
+      <ion-label slot="end" class="ion-text-wrap">
+        <h2>{{ auditLog.description }}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p>Ubicación del evento</p>
+      </ion-label>
+      <ion-label slot="end">
+        <h2>{{ auditLog.geoPoint.latitude }}, {{ auditLog.geoPoint.longitude }}</h2>
+      </ion-label>
+    </ion-item>
+  </ion-list><ion-list *ngIf="!loading">
+    <ion-list-header>
+      <ion-label>
+        Detalles del servicio
+      </ion-label>
+    </ion-list-header>
+
+    <ion-item>
+      <ion-label>
+        <p>Conductor</p>
+      </ion-label>
+      <ion-label slot="end">
+        <h2>{{ auditLog.driver }}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p>Unidad</p>
+      </ion-label>
+      <ion-label slot="end">
+        <h2>{{ auditLog.vehicleName }}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p>Ruta</p>
+      </ion-label>
+      <ion-label slot="end">
+        <h2>{{ auditLog.routeName }}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p>Programa</p>
+      </ion-label>
+      <ion-label slot="end">  
+        <h2>{{ auditLog.program == 'M' ? 'Mete': 'Saca'}}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>
+        <p>Turno</p>
+      </ion-label>
+      <ion-label slot="end">
+        <h2>{{ auditLog.round }}</h2>
+      </ion-label>
+    </ion-item>
+
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-progress-bar type="indeterminate" color="tertiary" *ngIf="loading" reversed="true"></ion-progress-bar>
+</ion-footer>

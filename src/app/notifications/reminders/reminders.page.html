@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button text="atrás" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Crear recordatorio</ion-title>
+    <ion-buttons slot="end">
+
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="ion-padding">
+    <ion-img src="assets/img/notification.png"></ion-img>
+  </div>
+  <form (ngSubmit)="setReminder()" [formGroup]="reminderForm">
+  <ion-list>
+    <ion-list-header>
+      Detalles del recordatorio
+    </ion-list-header>
+
+    <ion-item (click)="presentModal()">
+      <ion-label>Parada</ion-label>
+      <ion-input formControlName="stationName" placeholder="Seleccionar" type="text" class="ion-text-right"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Turno</ion-label>
+      <ion-select placeholder="Select One" formControlName="round" >
+        <ion-select-option value="dia">Día</ion-select-option>
+        <ion-select-option value="tarde">Tarde</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Tiempo antes</ion-label>
+      <ion-select placeholder="Select One" formControlName="minutes">
+        <ion-select-option value="1">1 min</ion-select-option>
+        <ion-select-option value="2">2 min</ion-select-option>
+        <ion-select-option value="3">3 min</ion-select-option>
+        <ion-select-option value="4">4 min</ion-select-option>
+        <ion-select-option value="5">5 min</ion-select-option>
+        <ion-select-option value="6">6 min</ion-select-option>
+        <ion-select-option value="7">7 min</ion-select-option>
+        <ion-select-option value="8">8 min</ion-select-option>
+        <ion-select-option value="9">9 min</ion-select-option>
+        <ion-select-option value="10">10 min</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Días</ion-label>
+      <ion-select placeholder="Select One" multiple formControlName="days" >
+        <ion-select-option value="sunday">Domingo</ion-select-option>
+        <ion-select-option value="monday">Lunes</ion-select-option>
+        <ion-select-option value="tuesday">Martes</ion-select-option>
+        <ion-select-option value="wednesday">Miércoles</ion-select-option>
+        <ion-select-option value="thursday">Jueves</ion-select-option>
+        <ion-select-option value="friday">Viernes</ion-select-option>
+        <ion-select-option value="saturday">Sábado</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+  <ion-button expand="block" class="" size="large" type="submit" [disabled]="!reminderForm.valid">Guardar</ion-button>
+</form>
+  
+</ion-content>

@@ -1,0 +1,122 @@
+{
+  "project_info": {
+    "project_number": "716902039021",
+    "firebase_url": "https://bus2u-dev.firebaseio.com",
+    "project_id": "bus2u-dev",
+    "storage_bucket": "bus2u-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:716902039021:android:48f586fef27055e09fbbe4",
+        "android_client_info": {
+          "package_name": "com.bus2u.grabita.driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "716902039021-9h3cr5sap5op8aqhl7do2suq5r2096pp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0OZCoj1Y2hj_yCFSKoJ_ATuIUbDnaVcE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "716902039021-9h3cr5sap5op8aqhl7do2suq5r2096pp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "716902039021-5e7rnamjc5jvi3489l1ojmlbb6he3jkf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bus2u.grabita.user",
+                "app_store_id": "1494210275"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:716902039021:android:5f74ef204fe7ef409fbbe4",
+        "android_client_info": {
+          "package_name": "com.bus2u.grabita.user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "716902039021-9h3cr5sap5op8aqhl7do2suq5r2096pp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0OZCoj1Y2hj_yCFSKoJ_ATuIUbDnaVcE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "716902039021-9h3cr5sap5op8aqhl7do2suq5r2096pp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "716902039021-5e7rnamjc5jvi3489l1ojmlbb6he3jkf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bus2u.grabita.user",
+                "app_store_id": "1494210275"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:716902039021:android:f84b7be4a3df4ed09fbbe4",
+        "android_client_info": {
+          "package_name": "com.grabita.bus2u.parents"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "716902039021-9h3cr5sap5op8aqhl7do2suq5r2096pp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0OZCoj1Y2hj_yCFSKoJ_ATuIUbDnaVcE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "716902039021-9h3cr5sap5op8aqhl7do2suq5r2096pp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "716902039021-5e7rnamjc5jvi3489l1ojmlbb6he3jkf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bus2u.grabita.user",
+                "app_store_id": "1494210275"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

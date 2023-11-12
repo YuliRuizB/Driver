@@ -1,0 +1,145 @@
+<ion-header>
+  <ion-toolbar color="warning">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Finalizar programa</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+<div *ngIf="loading">
+  <ion-list>
+    <ion-list-header>
+      <ion-label>
+        <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+      </ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let i of [1,2,3,4,5,6,7]">
+      <ion-label>
+        <h2 class="ion-text-right">
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </h2>
+        <p>
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </p>
+      </ion-label>
+      <ion-note slot="end">
+        <ion-skeleton-text animated style="width: 10%"></ion-skeleton-text>
+      </ion-note>
+    </ion-item>
+  </ion-list>
+</div>
+
+<ion-list *ngIf="!loading">
+
+  <ion-list-header>
+    <ion-label>
+      Información del programa
+    </ion-label>
+  </ion-list-header>
+
+  <ion-item>
+    <ion-label>
+      <h2>{{ program.driverConfirmationAt.toDate() | date: 'shortTime' }}</h2>
+      <p>Confirmación</p>
+    </ion-label>
+    <ion-label slot="end" class="ion-text-wrap">
+      <h2 class="ion-text-right">{{ program.isConfirmed ? (program.driverConfirmedAt.toDate() | date: 'shortTime') : 'N/D' }}</h2>
+    </ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>
+      <h2>{{ program.startAt.toDate() | date: 'shortTime' }}</h2>
+      <p>Inicio</p>
+    </ion-label>
+    <ion-label slot="end" class="ion-text-wrap">
+      <h2 class="ion-text-right">{{ program.started ? (program.startedAt.toDate() | date: 'shortTime') : 'N/D' }}</h2>
+    </ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>
+      <h2>{{ program.endAt.toDate() | date: 'shortTime' }}</h2>
+      <p>Fin</p>
+    </ion-label>
+    <ion-label slot="end" class="ion-text-wrap">
+      <h2 class="ion-text-right">{{ program.hasEnded ? (program.endedAt.toDate() | date: 'shortTime') : 'ahora' }}</h2>
+    </ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>
+      <p>Conductor</p>
+    </ion-label>
+    <ion-label slot="end">
+      <h2 class="ion-text-right">{{ program.driver }}</h2>
+    </ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>
+      <p>Unidad</p>
+    </ion-label>
+    <ion-label slot="end">
+      <h2 class="ion-text-right">{{ program.vehicleName }}</h2>
+    </ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>
+      <p>Ruta</p>
+    </ion-label>
+    <ion-label slot="end">
+      <h2 class="ion-text-right">{{ program.routeName }}</h2>
+    </ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>
+      <p>Programa</p>
+    </ion-label>
+    <ion-label slot="end">  
+      <h2 class="ion-text-right">{{ program.program == 'M' ? 'Mete': 'Saca'}}</h2>
+    </ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>
+      <p>Turno</p>
+    </ion-label>
+    <ion-label slot="end">
+      <h2 class="ion-text-right">{{ program.round }}</h2>
+    </ion-label>
+  </ion-item>
+
+</ion-list>
+
+<ion-list>
+  <ion-list-header>
+    Checklist
+  </ion-list-header>
+
+  <ion-item>
+    <ion-label>¿La unidad está limpia?</ion-label>
+    <ion-toggle [(ngModel)]="checkList.vehicleClean"></ion-toggle>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>¿Presenta algún daño?</ion-label>
+    <ion-toggle [(ngModel)]="checkList.damages"></ion-toggle>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>¿La unidad requiere atención?</ion-label>
+    <ion-toggle [(ngModel)]="checkList.needsAttention"></ion-toggle>
+  </ion-item>
+
+</ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="block" class="" *ngIf="!program.hasEnded" color="warning" size="large" (click)="presentAlertConfirm()">Finalizar programa</ion-button>
+</ion-footer>

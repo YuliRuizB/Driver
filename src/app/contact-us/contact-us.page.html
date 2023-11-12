@@ -1,0 +1,70 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="ion-no-padding">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <!-- <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon color="primary" name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons> -->
+    <ion-title>Conectémonos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true" *ngIf="contactUsInfo">
+
+  <ion-list lines="none">
+    <ion-item>
+      <ion-label>
+        <h2>Versión</h2>
+      </ion-label>
+      <ion-note slot="end">
+        <ion-chip>0.2.50</ion-chip>
+      </ion-note>
+    </ion-item>
+  </ion-list>
+
+
+   <div class="ion-padding">
+    <ion-img src="assets/img/support_info.png"></ion-img>
+  </div> 
+
+   <ion-list lines="none">
+    <ion-item>
+      <ion-label>
+        <p color="medium">Habla con nosotros!</p>
+      </ion-label>
+      <ion-button fill="clear" slot="end" href="https://api.whatsapp.com/send/?phone=528115397961&text&type=phone_number&app_absent=0" target="_top">
+        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <p color="medium">Teléfono de ayuda</p>
+        <h2>{{ contactUsInfo.phone }}</h2>
+      </ion-label>
+      <ion-button fill="clear" slot="end" href="tel:{{ contactUsInfo.phone }}" target="_top">
+        <ion-icon slot="icon-only" name="call" color="success"></ion-icon>
+      </ion-button>
+    </ion-item>
+
+  </ion-list>
+
+  <ion-list lines="inset">
+    <ion-list-header>
+      Envíanos tu mensaje
+    </ion-list-header>
+
+    <ion-item >
+      <ion-textarea rows="6" [(ngModel)]="message" placeholder="Escríbenos tu mensaje aquí..."></ion-textarea>
+      <!--  <ion-input type="text" class="ion-text-right" minLength="4" maxlength="15" name="displayName" [value]="user.displayName" (ionBlur)="updateProfile('displayName', $event)"></ion-input> -->
+    </ion-item>
+
+  </ion-list> 
+
+</ion-content>
+
+<ion-footer>
+  <ion-button size="large" color="primary" [disabled]="button" (click)="sendMessage()" expand="full">Enviar</ion-button> 
+</ion-footer>

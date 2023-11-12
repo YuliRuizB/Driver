@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button text="atrás" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Compras
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="products">
+  <ion-card button="true" (click)="getProductDetails(products[0])">
+    
+    <ion-card-header>
+      <ion-card-subtitle>{{ products[0].category }}</ion-card-subtitle>
+      <ion-card-title>{{ products[0].name }}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      {{ products[0].description }}
+    </ion-card-content>
+
+    <ion-item lines="none" class="">
+      <ion-chip color="success" slot="end">
+        <ion-icon name="pricetag"></ion-icon>
+        <ion-label>{{ products[0].price | currency:'MXN' }}</ion-label>
+      </ion-chip>
+    </ion-item>
+
+  </ion-card>
+
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Otros productos disponibles</ion-label>
+    </ion-list-header>
+    <div *ngIf="products && products.length > 1">
+    <ion-item *ngFor="let product of products" (click)="getProductDetails(product)">
+      <ion-label>{{ product.name }}</ion-label>
+      <ion-chip slot="end" color="primary">
+        {{ product.price | currency: 'MXN' }}
+      </ion-chip>
+    </ion-item>
+    </div>
+    <div *ngIf="products && products.length == 1">
+    <ion-item>
+      <ion-label>No hay más productos disponibles</ion-label>
+    </ion-item>
+  </div>
+  </ion-list>
+
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+</ion-footer>

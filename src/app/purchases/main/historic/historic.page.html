@@ -1,0 +1,88 @@
+<ion-header translucent="true">
+  <ion-toolbar color="primary">
+    <ion-buttons collapse="false" slot="start">
+      <ion-back-button text="atrás" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Mis Compras
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-header collapse="condense">              
+    <ion-toolbar>
+      <ion-buttons collapse="false" slot="end">
+        <ion-back-button text=" " icon="close" defaultHref="/"></ion-back-button>
+      </ion-buttons>
+      <ion-title size="large">Mis Compras</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-list *ngIf="purchases.length === 0">
+    <ion-list-header>
+      <ion-label>
+        <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
+      </ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let i of [1,2,3,4]">
+      <ion-thumbnail slot="end">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-thumbnail>
+      <ion-label>
+        <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        <h2 class="ion-text-wrap">
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </h2>
+        <p>
+          <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
+        </p>
+        <p>
+          <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
+        </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="purchases && purchases.length > 0">
+    <ion-list>
+      
+      <ion-item *ngFor="let p of purchases">
+        <ion-label>
+          <p>Fecha: {{ p.creation_date | date: 'medium' }}</p>
+          <h2>{{ p.name }}</h2>
+          <p>Código autorización: {{ p.authorization }}</p>
+          <p class="ion-text-wrap">{{ p.category }}</p>
+          <!-- <p class="ion-text-wrap">Ruta: {{ p.routeName }}, turno: {{ p.round }}, parada: {{ p.stopName }}</p> -->
+        </ion-label>
+        <ion-chip [color]="p.status === 'completed' ? 'primary': 'light'">
+          <ion-icon [name]="p.method == 'card' ? 'card-outline' : 'newspaper-outline'"
+            [color]="p.status === 'completed' ? 'primary': 'light'"></ion-icon>
+          <ion-label>{{ p.amount | currency:'MXN'}}</ion-label>
+        </ion-chip>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label color="medium" class="ion-text-center">
+          <p>{{ purchases.length }} compras</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <div *ngIf="purchases.length === 0 && !loading">
+    <ion-img class="ion-margin ion-padding" src="assets/img/todolist.jpg"></ion-img>
+    <h1 class="ion-text-center">Aún no tienes <br> pases de abordar</h1>
+    <ion-button expand="block" class="ion-margin" [routerLink]="['/products']" routerLinkActive="router-link-active">
+      Comprar</ion-button>
+  </div>
+
+</ion-content>
+
+<ion-footer>
+  <ion-button *ngIf="purchaseRequests && purchaseRequests.length > 0" expand="full" fill="clear"
+    [routerLink]="['/reference/list']" routerLinkActive="router-link-active">
+    <ion-icon slot="start" name="clock"></ion-icon>
+    Tienes referencias de pago abiertas
+  </ion-button>
+</ion-footer>

@@ -1,0 +1,129 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button text="atrás" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Pago con tarjeta
+    </ion-title>
+  </ion-toolbar>
+  <ion-list lines="none">
+    <ion-item color="primary">
+      <ion-label class="ion-text-center">
+        <h1 color="primary">{{ product.price | currency: 'MXN' }}</h1>
+        <h3 class="ion-margin">{{ product.description }}</h3>
+      </ion-label>
+      <img class="brand" style="width: 40px;" [src]="card.logo">
+      <img class="brand" style="width: 40px;" [src]="card.logo2">
+      <img class="brand" style="width: 40px;" [src]="card.logo3">
+    </ion-item>
+  </ion-list>
+</ion-header>
+
+<ion-content>
+
+  <form action="#" method="POST" id="payment-form" #paymentForm>
+
+    <input type="hidden" name="token_id" id="token_id">
+    <input type="hidden" name="use_card_points" id="use_card_points" value="false">
+
+
+    <ion-list>
+
+      <!-- Inputs with labels -->
+      <ion-item>
+        <ion-label position="stacked">Titular</ion-label>
+        <ion-input type="text" [(ngModel)]="holderName" name="holderName" placeholder="Como aparece en la tarjeta"
+          autocomplete="off" data-openpay-card="holder_name"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Número de tarjeta</ion-label>
+        <ion-input type="text" maxlength="16" minlength="16" pattern="tel" required inputmode="numeric"
+          autocomplete="off" data-openpay-card="card_number"></ion-input>
+      </ion-item>
+
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label position="stacked">Mes</ion-label>
+              <!-- <ion-input type="text" placeholder="Mes" data-openpay-card="expiration_month"></ion-input> -->
+              <ion-select placeholder="Mes" data-openpay-card="expiration_month">
+                <ion-select-option value="01">01</ion-select-option>
+                <ion-select-option value="02">02</ion-select-option>
+                <ion-select-option value="03">03</ion-select-option>
+                <ion-select-option value="04">04</ion-select-option>
+                <ion-select-option value="05">05</ion-select-option>
+                <ion-select-option value="06">06</ion-select-option>
+                <ion-select-option value="07">07</ion-select-option>
+                <ion-select-option value="08">08</ion-select-option>
+                <ion-select-option value="09">09</ion-select-option>
+                <ion-select-option value="10">10</ion-select-option>
+                <ion-select-option value="11">11</ion-select-option>
+                <ion-select-option value="12">12</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item>
+              <ion-label position="stacked">Año</ion-label>
+              <!-- <ion-input type="text" placeholder="Año" data-openpay-card="expiration_year"></ion-input> -->
+              <ion-select placeholder="Año" data-openpay-card="expiration_year">
+                <ion-select-option value="19">2019</ion-select-option>
+                <ion-select-option value="20">2020</ion-select-option>
+                <ion-select-option value="21">2021</ion-select-option>
+                <ion-select-option value="22">2022</ion-select-option>
+                <ion-select-option value="23">2023</ion-select-option>
+                <ion-select-option value="24">2024</ion-select-option>
+                <ion-select-option value="25">2025</ion-select-option>
+                <ion-select-option value="26">2026</ion-select-option>
+                <ion-select-option value="27">2027</ion-select-option>
+                <ion-select-option value="28">2028</ion-select-option>
+                <ion-select-option value="29">2029</ion-select-option>
+                <ion-select-option value="30">2030</ion-select-option>
+                <ion-select-option value="31">2031</ion-select-option>
+                <ion-select-option value="32">2032</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item>
+              <ion-label position="stacked">CVV</ion-label>
+              <ion-input type="text" maxlength="4" minlength="3" required inputmode="numeric" placeholder="3 dígitos"
+                autocomplete="off" data-openpay-card="cvv2"></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-list>
+    <ion-list lines="none">
+      <ion-item color="success">
+        <ion-label>
+          Transacciones realizadas vía
+        </ion-label>
+        <ion-img src="assets/img/openpay.png"></ion-img>
+      </ion-item>
+      <ion-item>
+        <ion-img class="ion-padding" src="assets/img/security.png"></ion-img>
+        <ion-label class="ion-text-wrap">
+          <small>Tus pagos se realizan de forma segura con encriptación de 256 bits</small>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-toggle slot="start" [(ngModel)]="agreed" name="agree"></ion-toggle>
+        <ion-label class="ion-text-wrap">Estoy de acuerdo con los términos y condiciones del servicio</ion-label>
+        <ion-button slot="end" [routerLink]="['/cards']" routerLinkActive="router-link-active">
+          Leer
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+    <div class="sctn-row">
+      <!-- <a class="button rght" id="pay-button">Pagar</a> -->
+      <ion-button expand="full" [disabled]="!agreed" size="large" color="primary" type="submit">Pagar ahora
+        {{product.price | currency: 'MXN' }}</ion-button>
+    </div>
+  </form>
+
+</ion-content>

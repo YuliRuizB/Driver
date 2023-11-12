@@ -1,0 +1,76 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="ion-no-padding">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="presentAlertRadio()">
+        <ion-icon color="primary" name="map"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Paradas Cercanas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+  <div class="map">
+    <div id="mapId" style="width: 100%; height: 100%"></div>
+  </div>
+  <ion-fab vertical="center" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary">
+      <ion-icon name="settings"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <!-- <ion-fab-button (click)="updateUserGeolocation()" color="light">
+        <ion-thumbnail>
+          <img  style="width: 50%; height: 50%; margin-top: 12px !important;" src="assets/icon/marker_user_location.png">
+        </ion-thumbnail>
+      </ion-fab-button> -->
+      <ion-fab-button (click)="startAutoUpdate()" color="light" *ngIf="!autoUpdateStatus">
+        <ion-thumbnail>
+          <img  style="width: 50%; height: 50%; margin-top: 12px !important;" src="assets/icon/marker_bus_play.png">
+        </ion-thumbnail>
+      </ion-fab-button>
+      <ion-fab-button (click)="stopAutoUpdate()" color="light" *ngIf="autoUpdateStatus">
+        <ion-thumbnail>
+          <img  style="width: 50%; height: 50%; margin-top: 12px !important;" src="assets/icon/marker_bus_stop.png">
+        </ion-thumbnail>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+
+  <ion-toolbar style="top: 70vh !important;">
+    <ion-slides [options]="sliderConfig">
+      <ion-slide *ngIf="routeStopsList.length == 0 && !loading">
+        <ion-card button (click)="presentAlertRadio()">
+          <ion-item lines="none">
+            <ion-icon color="success" name="information-circle-outline" size="large" slot="start"></ion-icon>
+            <ion-label class="ion-text-wrap">
+              <p>Para más información</p>
+              <p>selecciona una ruta</p>
+            </ion-label>
+          </ion-item>
+        </ion-card>
+      </ion-slide>
+      <ion-slide *ngFor="let stop of routeStopsList">
+        <ion-card>
+          <ion-item lines="none" (click)="openModalStationInfo(stop)">
+            <ion-thumbnail slot="start" class="ion-no-padding ion-no-margin">
+              <img class="ion-no-padding" [src]="stop.iconUrl ? stop.iconUrl : 'assets/icon/pin_station.png'" style="width: 30px; height: 30px;">
+            </ion-thumbnail>
+            <ion-label class="ion-text-wrap">
+              <h5>{{ stop.name }}</h5>
+              <p>{{ stop.description }}</p>
+              <ion-label class="ion-text-wrap" *ngIf="hasUserGeoLocation && stop.distance && stop.duration ">
+                <ion-icon color="primary" name="walk" size="small"></ion-icon>
+                <small>{{ stop.distance }} {{ stop.duration }}</small>
+              </ion-label>
+              <!-- <p>2.2 km (4 min)</p> -->
+            </ion-label>
+          </ion-item>
+        </ion-card>
+      </ion-slide>
+    </ion-slides>
+  </ion-toolbar>
+
+</ion-content>

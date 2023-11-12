@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="atrás" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Pago en tienda</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="storeChargeRequest()">
+        <ion-icon color="primary" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="chargeRequests">
+    <ion-list-header>
+      <ion-label>Referencia de pago</ion-label>
+    </ion-list-header>
+      <ion-item  *ngFor="let cr of chargeRequests" [disabled]="isPastDue(cr.due_date)" (click)="payThisReference(cr)">
+        <ion-icon [color]="isPastDue(cr.due_date) ? 'danger' : 'primary'" name="barcode" slot="start"></ion-icon>
+        <ion-label>
+          <ion-text color="primary">{{ cr.amount | currency: 'MXN' }}</ion-text>
+          <h2 class="ion-text-wrap">{{ cr.description }}</h2>
+          <ion-note [color]="isPastDue(cr.due_date) ? 'danger' : 'primary'" class="ion-text-wrap">Pagar antes de {{ cr.due_date | date:'medium' }}</ion-note>
+          <p *ngIf="isPastDue(cr.due_date)">Vencido</p>
+          <p>{{ cr.status }}</p>
+        </ion-label>
+        <!-- <ion-chip slot="end" color="secondary">
+          <ion-label color="secondary">{{ cr.amount | currency: 'MXN' }}</ion-label>
+        </ion-chip> -->
+      </ion-item>
+      <!-- <ion-item-options side="end">
+        <ion-item-option (click)="payThisReference(cr)">Pagar</ion-item-option>
+        <ion-item-option color="danger" (click)="payThisReference(cr)">Eliminar</ion-item-option>
+      </ion-item-options> -->
+  </ion-list>
+
+  <ion-list>
+    <ion-list-header>
+      <ion-label>¿Dónde pagar?</ion-label>
+    </ion-list-header>
+    <ion-item [routerLink]="['/reference/purchase/locate-store-map']" routerLinkActive="router-link-active" >Buscar tienda más cercana</ion-item>
+  </ion-list>
+
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+</ion-footer>
