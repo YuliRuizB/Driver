@@ -7,65 +7,7 @@
     "files": {}
   },
   "installed_plugins": {
-    "cordova-plugin-background-geolocation": {
-      "GOOGLE_PLAY_SERVICES_VERSION": "11+",
-      "ANDROID_SUPPORT_LIBRARY_VERSION": "26+",
-      "ICON": "@mipmap/icon",
-      "SMALL_ICON": "@mipmap/icon",
-      "ACCOUNT_NAME": "@string/app_name",
-      "ACCOUNT_LABEL": "@string/app_name",
-      "ACCOUNT_TYPE": "$PACKAGE_NAME.account",
-      "CONTENT_AUTHORITY": "$PACKAGE_NAME",
-      "PACKAGE_NAME": "com.bus2u.grabita.driver"
-    },
-    "cordova-plugin-camera": {
-      "ANDROIDX_CORE_VERSION": "1.6.+",
-      "PACKAGE_NAME": "com.bus2u.grabita.driver"
-    },
-    "cordova-plugin-device": {
-      "PACKAGE_NAME": "com.bus2u.grabita.driver"
-    },
-    "cordova-plugin-fcm-with-dependecy-updated": {
-      "ANDROID_DEFAULT_NOTIFICATION_ICON": "@mipmap/ic_launcher",
-      "ANDROID_FCM_VERSION": "21.0.0",
-      "ANDROID_FIREBASE_BOM_VERSION": "26.0.0",
-      "ANDROID_GOOGLE_SERVICES_VERSION": "4.3.4",
-      "ANDROID_GRADLE_TOOLS_VERSION": "4.1.0",
-      "PACKAGE_NAME": "com.bus2u.grabita.driver"
-    },
-    "cordova-plugin-file": {
-      "ANDROIDX_WEBKIT_VERSION": "1.4.0",
-      "PACKAGE_NAME": "com.bus2u.grabita.driver"
-    },
-    "cordova-plugin-geolocation": {
-      "GPS_REQUIRED": "true",
-      "PACKAGE_NAME": "com.bus2u.grabita.driver"
-    },
-    "cordova-plugin-ionic-keyboard": {
-      "PACKAGE_NAME": "com.bus2u.grabita.driver"
-    },
-    "cordova-plugin-ionic-webview": {
-      "PACKAGE_NAME": "com.bus2u.grabita.driver"
-    },
-    "cordova-plugin-qrscanner": {
-      "PACKAGE_NAME": "com.bus2u.grabita.driver"
-    },
-    "cordova-plugin-splashscreen": {
-      "PACKAGE_NAME": "com.bus2u.grabita.driver"
-    },
-    "cordova-plugin-statusbar": {
-      "PACKAGE_NAME": "com.bus2u.grabita.driver"
-    },
-    "cordova-plugin-vibration": {
-      "PACKAGE_NAME": "com.bus2u.grabita.driver"
-    },
-    "cordova-plugin-x-socialsharing": {
-      "PACKAGE_NAME": "com.bus2u.grabita.driver"
-    },
-    "mx.ferreyra.callnumber": {
-      "PACKAGE_NAME": "com.bus2u.grabita.driver"
-    },
-    "cordova-plugin-androidx-adapter": {
+    "call-number": {
       "PACKAGE_NAME": "com.bus2u.grabita.driver"
     },
     "cordova-android-play-services-gradle-release": {
@@ -121,6 +63,62 @@
       "PLAY-SERVICES-VISION-IMAGE-LABEL": "18.0.0",
       "PLAY-SERVICES-WALLET": "17.0.0",
       "PLAY-SERVICES-WEARABLE": "17.0.0",
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-open-native-settings": {
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-plugin-android-permissions": {
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-plugin-androidx-adapter": {
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-plugin-background-mode": {
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-plugin-camera": {
+      "ANDROIDX_CORE_VERSION": "1.6.+",
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-plugin-fcm-with-dependecy-updated": {
+      "ANDROID_DEFAULT_NOTIFICATION_ICON": "@mipmap/ic_launcher",
+      "ANDROID_FCM_VERSION": "23.0.8",
+      "ANDROID_FIREBASE_BOM_VERSION": "29.0.1",
+      "ANDROID_GOOGLE_SERVICES_VERSION": "4.3.4",
+      "ANDROID_GRADLE_TOOLS_VERSION": "4.1.0",
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-plugin-file": {
+      "ANDROIDX_WEBKIT_VERSION": "1.4.0",
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-plugin-geolocation": {
+      "GPS_REQUIRED": "true",
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-plugin-ionic-keyboard": {
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-plugin-ionic-webview": {
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-plugin-qrscanner": {
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-plugin-splashscreen": {
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-plugin-statusbar": {
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-plugin-vibration": {
+      "PACKAGE_NAME": "com.bus2u.grabita.driver"
+    },
+    "cordova-plugin-x-socialsharing": {
       "PACKAGE_NAME": "com.bus2u.grabita.driver"
     }
   },

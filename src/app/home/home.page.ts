@@ -23,9 +23,10 @@ import { map, take, filter } from "rxjs/operators";
 import { UsersService } from "../services/firebase/users.service";
 import { StorageService } from "../services/storage/storage.service";
 import { StationInfoPage } from "./station-info/station-info.page";
-import { FCM } from "@ionic-native/fcm/ngx";
+// import { FCM } from "@ionic-native/fcm/ngx";
 import { OsrmService } from "../services/osrm/osrm.service";
 import esLocale from "date-fns/locale/es";
+import { LivepositionService } from '../../app/shared/services/liveposition.service';
 
 @Component({
   selector: "app-home",
@@ -68,9 +69,10 @@ export class HomePage implements OnInit {
     public alertController: AlertController,
     private usersService: UsersService,
     private storageService: StorageService,
-    private fcm: FCM,
+    // private fcm: FCM,
     private osrmService: OsrmService,
-    private routerOutlet: IonRouterOutlet
+    private routerOutlet: IonRouterOutlet,
+		private _LivepositionService: LivepositionService
   ) { }
 
   ionViewDidEnter() {
@@ -80,7 +82,6 @@ export class HomePage implements OnInit {
       // this.canShowDevices();
       this.getSubscriptions();
       this.validateToken();
-
       if (this.user && this.user.defaultRoute) {
         // this.showMapRoute();
       } else {
@@ -109,7 +110,7 @@ export class HomePage implements OnInit {
   }
 
   validateToken() {
-    this.fcm.getToken().then((token) => {
+    /*this.fcm.getToken().then((token) => {
       console.log("getToken() from homepage");
       this.usersService.registerToken(this.user.uid, token);
     });
@@ -121,6 +122,7 @@ export class HomePage implements OnInit {
       console.log("getAPNSToken() from homepage");
       this.usersService.registerAPNSToken(this.user.uid, token);
     });
+		*/
   }
 
   async requestDefaultRoute() {

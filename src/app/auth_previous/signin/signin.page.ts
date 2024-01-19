@@ -23,7 +23,7 @@ export class SigninPage implements OnInit {
     public navController: NavController,
     private toastService: ToastService,
     private usersService: UsersService,
-    private storageService: StorageService
+    private storageService: StorageService,
   ) {
     this.loginForm = fb.group({
 			email: ['', Validators.compose([Validators.required, Validators.email])],
@@ -32,6 +32,7 @@ export class SigninPage implements OnInit {
    }
 
   ngOnInit() {
+		
   }
 
   signin() {

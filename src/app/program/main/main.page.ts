@@ -9,7 +9,7 @@ import * as _ from 'lodash';
 import { LivepositionService } from '@shared/services/liveposition.service';
 import { Storage } from '@ionic/storage-angular';
 import { differenceInMinutes } from 'date-fns';
-
+import { AndroidPermissions }  from '@awesome-cordova-plugins/android-permissions/ngx';
 @Component({
   selector: 'app-main',
   templateUrl: './main.page.html',
@@ -25,13 +25,29 @@ export class MainPage implements OnInit, OnDestroy {
   optionSelected: string = "1";
   programSubscription: Subscription;
   isLiveProgram;
+	interval: any;
   @ViewChild('slide', { static: true }) slide: IonItemSliding;
 
-  constructor(private programService: ProgramService, private storage: Storage, private livepositionService: LivepositionService, private router: Router, public actionSheetController: ActionSheetController, private authService: AuthService) {
+  constructor(private programService: ProgramService, private storage: Storage, private livepositionService: LivepositionService, private router: Router, public actionSheetController: ActionSheetController, private authService: AuthService,
+		private _AndroidPermissions: AndroidPermissions
+		) {
 
   }
 
   ngOnInit() {
+		this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION).then((result) => {
+      console.log('esto regresa');
+			console.log(result);
+			/*this._AndroidPermissions.requestPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION).then((data:any) => {
+				console.log('request')
+				console.log(data)
+			}).catch((error)=>{
+				console.log(error);
+			})*/
+    }).catch((err) => {
+      console.log('en el catch');
+      console.log(err);
+    });
     this.authService.user_profile.subscribe((data) => {
       this.user = data;
       console.log(this.user);
@@ -40,9 +56,27 @@ export class MainPage implements OnInit, OnDestroy {
       }
     });
 
+
+		this.livepositionService.coordsObsr().subscribe((subs) => {
+			console.log('viendo la subcripcion');
+			console.log(subs)
+			if (subs === 1 ) {
+					
+			}else{
+				clearInterval(this.interval)
+			}
+		});
     this.livepositionService.isLiveProgram.subscribe( (isLiveProgram: boolean) => {
       this.isLiveProgram = isLiveProgram;
     })
+
+
+		/*this.interval =  setInterval(() => {
+			this.livepositionService.callGps2().then((resp) => {
+				console.log('esto regresa')
+				console.log(resp)
+			});
+		},5000);*/
   }
 
   ngOnDestroy() {

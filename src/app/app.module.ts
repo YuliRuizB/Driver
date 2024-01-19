@@ -42,7 +42,8 @@ registerLocaleData(localeEs, 'es-MX', localeMXExtra);
 import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
 import { Vibration } from '@awesome-cordova-plugins/vibration/ngx';
 import { AppComponent } from './app.component';
-
+import { BackgroundMode } from '@ionic-native/background-mode/ngx'
+import { AndroidPermissions }  from '@awesome-cordova-plugins/android-permissions/ngx';
 @NgModule({
   declarations: [AppComponent, MenuPage],
   entryComponents: [],
@@ -71,6 +72,8 @@ import { AppComponent } from './app.component';
     { provide: LOCALE_ID, useValue: 'es-MX' },
     AngularFireAuthGuard,
     BackgroundGeolocation,
+		BackgroundMode,
+		AndroidPermissions,
     QRScanner
   ],
   bootstrap: [AppComponent]

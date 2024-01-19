@@ -1,0 +1,15 @@
+qr scan fixed
+
+https://github.com/bitpay/cordova-plugin-qrscanner/compare/master...Cubaza:cordova-plugin-qrscanner:master
+
+qr scanner.java en plugins
+
+import androidx.core.app.ActivityCompat;
+
+qrscanner graddle en plugins
+ mavenCentral()
+
+ implementation 'com.journeyapps:zxing-android-embedded:3.3.0'
+  implementation 'com.android.support:appcompat-v7:23.1.0'
+
+	ionic cordova plugin add  cordova-plugin-fcm-with-dependecy-updated@https://github.com/inrobin/cordova-plugin-fcm-with-dependecy-updated

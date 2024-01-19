@@ -377,7 +377,10 @@ export class NavigationPage implements OnInit, OnDestroy {
         }
         }, 2000);
         this.mapService.addGEOLine(this.mapService.map, 'route', polylineArray, this.flyToZero);
-      });
+      },(error) => {
+				console.log('ali');
+				console.log(error);
+			})
   } 
 
   async showRouteOptions() {

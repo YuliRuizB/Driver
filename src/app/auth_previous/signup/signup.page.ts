@@ -24,12 +24,13 @@ export class SignupPage implements OnInit {
     private customersService: CustomersService,
     public toastService: ToastService,
     public navController: NavController,
-    public alertController: AlertController
+    public alertController: AlertController,
   ) { }
 
   ngOnInit() {
     this.createForm();
     this.getSubscriptions();
+		
   }
 
   createForm() {
