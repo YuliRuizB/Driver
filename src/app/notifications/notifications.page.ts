@@ -4,7 +4,7 @@ import { StorageService } from '../services/storage/storage.service';
 import { IUserData } from '../models/models';
 import { map } from 'rxjs/operators';
 import { AlertController, IonItemSliding } from '@ionic/angular';
-// import { FCM } from '@ionic-native/fcm/ngx';
+import { FCM } from '@ionic-native/fcm/ngx';
 import { Platform } from '@ionic/angular';
 
 @Component({
@@ -33,9 +33,9 @@ export class NotificationsPage implements OnInit {
       this.getSubscriptions();
     });
     this.plt.ready().then(() => {
-      /*this.fcm.onTokenRefresh().subscribe(token => {
+      this.fcm.onTokenRefresh().subscribe(token => {
         this.usersService.registerToken(this.user.uid, token);
-      });*/
+      });
     })
   }
 
@@ -74,13 +74,13 @@ export class NotificationsPage implements OnInit {
   }
 
   subscribeToTopic(topic: string) {
-    // this.fcm.subscribeToTopic(topic);
+    this.fcm.subscribeToTopic(topic);
   }
 
   getToken() {
-    /*this.fcm.getToken().then(token => {
+    this.fcm.getToken().then(token => {
       this.usersService.registerToken(this.user.uid, token);
-    });*/
+    });
   }
 
   unsubscribeFromTopic(topic: string) {

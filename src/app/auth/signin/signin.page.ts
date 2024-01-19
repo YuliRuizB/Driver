@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AuthService } from '@shared/services/auth.service';
-import { AndroidPermissions }  from '@awesome-cordova-plugins/android-permissions/ngx';
-import { Platform , AlertController} from '@ionic/angular'; 
+// import { AndroidPermissions }  from '@awesome-cordova-plugins/android-permissions/ngx';
+import { AndroidPermissions }  from '@ionic-native/android-permissions/ngx';
+import { Platform , AlertController, ModalController} from '@ionic/angular'; 
 import { Geolocation, Geoposition, GeolocationOptions, PositionError } from '@awesome-cordova-plugins/geolocation/ngx';
+import { AccesDataInfoModalPage } from './../../modals/acces-data-info-modal/acces-data-info-modal.page';
+import { OpenNativeSettings } from '@awesome-cordova-plugins/open-native-settings/ngx';
 @Component({
   selector: 'app-signin',
   templateUrl: './signin.page.html',
@@ -18,7 +21,9 @@ export class SigninPage implements OnInit {
     private authService: AuthService,
 		private _AndroidPermissions: AndroidPermissions,
 		private _Platform: Platform,
-		private _Geolocation: Geolocation
+		private _Geolocation: Geolocation,
+		private _ModalController: ModalController,
+		private _OpenNativeSettings: OpenNativeSettings
     ) { 
     this.loginForm = this.fb.group({
 			email: ['', Validators.compose([Validators.required, Validators.email])],
@@ -29,6 +34,7 @@ export class SigninPage implements OnInit {
   async ngOnInit() {
 		console.log('aqui???')
 		console.log('ngOnInit')
+		// this.bt();
 		/*this._AndroidPermissions.requestPermissions([this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION, this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION, this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION]).then((data:any) => {
 			console.log('request')
 			console.log(data)
@@ -50,24 +56,69 @@ export class SigninPage implements OnInit {
 		console.log('heyy');
 		console.log(accessFineLocationPermission2)*/
 
-		this.current2PositionUserOnly().then(async (data)=>{
+		/*this.current2PositionUserOnly().then(async (data)=>{
 			if(data==true){
 				this.call();
 			}
 
-		})
+		})*/
+
+		/*setTimeout(() => {
+			this.accesDataInfoModal(1);
+		},1500)*/
+		
+		this.validatePermission();
+	}
+
+	async validatePermission() {
+		const accessCoarseLocation = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION);
+		console.log('veo');
+		console.log(accessCoarseLocation)
+		this.accesDataInfoModal(1);
+		// this._OpenNativeSettings.open("application_details");
+		/*if (accessCoarseLocation.hasPermission === false) {
+			setTimeout(() => {
+				this.accesDataInfoModal(1);
+			},3000)
+		}else{
+			// const accessFineLocationPermission = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION);
+			console.log('fine');
+			const accessFineLocationPermission2 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION);
+			const accessFineLocationPermission3 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION);
+			console.log(accessFineLocationPermission2)
+			console.log(accessFineLocationPermission3)
+			this.accesDataInfoModal(2);
+			// console.log(accessFineLocationPermission)
+		}*/
 	}
 
 	async bt() {
-		const accessFineLocationPermission = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION);
+		const aux = await this._AndroidPermissions.requestPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION);
+		console.log('check')
+		console.log(aux)
+
+		/*this._AndroidPermissions.requestPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION).then((resp) => {
+			console.log('check')
+		console.log(resp)
+		}).catch((err) => {
+			console.log('err')
+			console.log(err)
+		})
+		
+		// const accessFineLocationPermission4 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_LOCATION_EXTRA_COMMANDS);
+			/*const accessFineLocationPermission = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION);
 			const accessFineLocationPermission2 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION);
 			const accessFineLocationPermission3 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION);
 			
 			console.log('esto veooooo');
+			// console.log(accessFineLocationPermission4);
 			console.log(accessFineLocationPermission)
 			console.log(accessFineLocationPermission2)
+
+			//este es el bueno
 			console.log(accessFineLocationPermission3)
-			this._AndroidPermissions.requestPermission(this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION)
+			// this._AndroidPermissions.requestPermission(this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION)
+			*/
 	}
 
   signin() {
@@ -76,200 +127,52 @@ export class SigninPage implements OnInit {
     }
   }
 
-	async current2PositionUserOnly() {
-		let accessFineLocationPermission;
-		let icoAux
-		/*if(this._Platform.is('android')){
-			let ico = this.device.version.split(".");
-			icoAux = parseInt(ico[0]);
-			//alert(icoAux)
-			if(icoAux <= 9){
-				accessFineLocationPermission = await this.permissions.checkPermission(this.permissions.PERMISSION.ACCESS_FINE_LOCATION)
-				console.log(1);
-			}else
-			if(icoAux==10){
-				//this.presentAlert();
-				//console.log('2');
-				accessFineLocationPermission = await this.permissions.checkPermission(this.permissions.PERMISSION.ACCESS_BACKGROUND_LOCATION)
-			}else
-			if(icoAux==11){
-				accessFineLocationPermission = await this.permissions.checkPermission(this.permissions.PERMISSION.ACCESS_FINE_LOCATION)
-			}
-	
-		}*/
-		accessFineLocationPermission = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION)
-		let accessFineLocationPermission4 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION)
-		return new Promise ((resolve,reject)=>{
-		if(accessFineLocationPermission && !accessFineLocationPermission.hasPermission) {
-			//this.presentAlert();
-			//this.presentAlertModal();
-			//console.log('bob 0')
-			//console.log('viendo el permiso 1');
-			//console.log(accessFineLocationPermission)
-			if(icoAux==11){
-				
-				//console.log('bob 1')
-				//console.log(accessFineLocationPermission4)
-	
-				if (accessFineLocationPermission4 && !accessFineLocationPermission4.hasPermission) {
-					//console.log('bob 2')
-					resolve(true)
-				}else{
-					//console.log('bob 3')
-					resolve(false);
-				}
-			}else{
-			resolve(true);
-			}
+	async callGps() {
+		const aux = await this._AndroidPermissions.requestPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION);
+		console.log('check')
+		console.log(aux)
+		const accessFineLocationPermission2 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION);
+			const accessFineLocationPermission3 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION);
+			console.log(accessFineLocationPermission2)
+			//fine
+			console.log(accessFineLocationPermission3)
+		if (aux.hasPermission === false) {
+			this.accesDataInfoModal(2);
 		}else{
-			//resolve(false);
-			//console.log('bob 0')
-			if(icoAux==11){
-				
-				//console.log('bob 1')
-				//console.log(accessFineLocationPermission4)
-	
-				if (accessFineLocationPermission4 && !accessFineLocationPermission4.hasPermission) {
-					//console.log('bob 2')
-					resolve(true)
-				}else{
-					//console.log('bob 3')
-					resolve(false);
-				}
-			}else{
-				//console.log('viendo el permiso 2');
-				//console.log(accessFineLocationPermission)
-			resolve(false);
+			const accessFineLocationPermission3 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION);
+			if (accessFineLocationPermission3.hasPermission === false) {
+				this.accesDataInfoModal(3);
 			}
+			// this._OpenNativeSettings.open("application_details");
 		}
-		})
+	}
 
-		}
-
-
-		async  permission(){
-			const accessFineLocationPermission = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION)
-			//console.log(accessFineLocationPermission)
-			let icoAux
-			if (accessFineLocationPermission && !accessFineLocationPermission.hasPermission) {
-		 
-				//const accessFineLocationPermission2 = await this.permissions.requestPermissions([this.permissions.PERMISSION.ACCESS_FINE_LOCATION, this.permissions.PERMISSION.ACCESS_BACKGROUND_LOCATION])
-				//const accessFineLocationPermission3 = await this.permissions.requestPermission(this.permissions.PERMISSION.ACCESS_BACKGROUND_LOCATION)
-				let accessFineLocationPermission2;
-				console.log('2');
-						accessFineLocationPermission2 = await this._AndroidPermissions.requestPermissions([this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION, this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION])
-				//console.log('BACK');
-				//console.log(accessFineLocationPermission2)
-				return new Promise ((resolve,reject)=>{
-				if(accessFineLocationPermission2.hasPermission == false){
-					//this.permission();
-	
-					resolve(false)
-				}else{
-					//this.callAndroid11();
-					//let accessFineLocationPermission3 =  this.permissions.requestPermission(this.permissions.PERMISSION.ACCESS_BACKGROUND_LOCATION)
-					//console.log('ANDROID 11');
-					//console.log(accessFineLocationPermission3)
-					//console.log('icon 11');
-					//console.log(icoAux)
-					if(icoAux==11){
-						resolve(11);
-					}else{
-						//console.log('cafe')
-						resolve(true)
-						// this.getCurrentPositionOnly();
-					}
+	async accesDataInfoModal(flag: number) {
+		console.log('entra');
+    const modal = await this._ModalController.create({
+      component: AccesDataInfoModalPage,
+      componentProps: { value:  flag},
+			showBackdrop:true,
+			backdropDismiss:false,
+    });
+		modal.onDidDismiss().then(async (result)=>{
+			console.log('veooooo')
+			console.log(result)
+			if (result.data === 1) {
+				// info gps acces
+				this.callGps();
+			} else
+			if (result.data === 2) {
+				this.accesDataInfoModal(3);
+			}else
+			if (result.data === 0){
+				const accessFineLocationPermission3 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION);
+				if (accessFineLocationPermission3.hasPermission === false) {
+					this.accesDataInfoModal(3);
 				}
-			})
-		 }else{
-			 //resolve(true)
-			 return new Promise ((resolve,reject)=>{
-				resolve(true)
-			})
-			 // this.getCurrentPositionOnly();
-		 }
-		
-		
-		}
-
-		async callAndroid11(){
-			const accessFineLocationPermission = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION)
-			//console.log(accessFineLocationPermission)
-			let icoAux
-			if (accessFineLocationPermission && !accessFineLocationPermission.hasPermission) {
-				//console.log('validacion de android 11');
-				//console.log(accessFineLocationPermission )
-				//let accessFineLocationPermission3
-				/*this.permissions.requestPermission(this.permissions.PERMISSION.ACCESS_BACKGROUND_LOCATION).then((res)=>{
-					console.log('res')
-					console.log(res)
-					accessFineLocationPermission3 = res;
-				})*/
-				//this._OpenNativeSettings.open("manage_applications");
-				let accessFineLocationPermission3 =  await this._AndroidPermissions.requestPermissions([this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION, this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION])//await this.permissions.requestPermission(this.permissions.PERMISSION.ACCESS_BACKGROUND_LOCATION)
-				//console.log('ANDROID 11');
-				//console.log(accessFineLocationPermission3)
-				return new Promise ((resolve,reject)=>{
-				
-				if(accessFineLocationPermission3.hasPermission == false){
-					//this.permission();
-					resolve(false);
-					console.log('alert 2')
-				}else{
-					resolve(true)
-					this.getCurrentPositionOnly();
-				}
-			
-				})
 			}
-		
-		
-		}
-
-		call(){
-			this.permission().then((data)=>{
-	
-				if(data==true){
-			
-					console.log('entro el close');
-				}else
-				if(data==11){
-					this.callAndroid11().then((dataReturn)=>{
-						if(dataReturn == true){
-							
-						}
-					});
-				}
-			});
-		}
-
-		getCurrentPositionOnly(){
-			this._Geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
-		
-				let userPosition = {position: {lat: data.coords.latitude, lng: data.coords.longitude},icon: '', title: '', heading: data.coords.heading };
-				console.log(userPosition)
-				//console.log('AGUA');
-				//console.log(this.positionArrayAux)
-			}).catch((error) => {
-		 console.log(error);
 		});
-		}
-
-		public currentPositionUserOnly(): Promise<any>{
-    
-			return new Promise ((resolve,reject)=>{
-				 this._Geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => { 
-	
-							 let userPosition = {position: {lat: data.coords.latitude, lng: data.coords.longitude},icon: '', title: 'alicarlo', heading: data.coords.heading };
-							 resolve(userPosition.position);
-							
-				 }).catch((error) => {
-					 console.log(error)
-						reject(error);
-				 });
-	
-				});
-	
-	 }
+    await modal.present();
+  }
 
 }

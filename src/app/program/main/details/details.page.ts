@@ -40,7 +40,7 @@ export class DetailsPage implements OnInit {
       
       .subscribe( program => {
         this.program = program.payload.data();
-        console.log(this.program);
+        // console.log(this.program);
         this.loading = false;
       })
   }

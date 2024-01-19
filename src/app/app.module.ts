@@ -29,7 +29,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 //Geolocation
 import { Geolocation } from '@awesome-cordova-plugins/geolocation/ngx';
-import { BackgroundGeolocation } from '@awesome-cordova-plugins/background-geolocation/ngx';
+// import { BackgroundGeolocation } from '@awesome-cordova-plugins/background-geolocation/ngx';
 
 // i18n
 import { registerLocaleData } from '@angular/common';
@@ -43,7 +43,9 @@ import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
 import { Vibration } from '@awesome-cordova-plugins/vibration/ngx';
 import { AppComponent } from './app.component';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx'
-import { AndroidPermissions }  from '@awesome-cordova-plugins/android-permissions/ngx';
+// import { AndroidPermissions }  from '@awesome-cordova-plugins/android-permissions/ngx';
+import { AndroidPermissions }  from '@ionic-native/android-permissions/ngx';
+import { OpenNativeSettings } from '@awesome-cordova-plugins/open-native-settings/ngx';
 @NgModule({
   declarations: [AppComponent, MenuPage],
   entryComponents: [],
@@ -71,10 +73,11 @@ import { AndroidPermissions }  from '@awesome-cordova-plugins/android-permission
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: LOCALE_ID, useValue: 'es-MX' },
     AngularFireAuthGuard,
-    BackgroundGeolocation,
+    // BackgroundGeolocation,
 		BackgroundMode,
 		AndroidPermissions,
-    QRScanner
+    QRScanner,
+		OpenNativeSettings
   ],
   bootstrap: [AppComponent]
 })

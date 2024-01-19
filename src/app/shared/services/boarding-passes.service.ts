@@ -26,19 +26,24 @@ export class BoardingPassesService {
 
   async validate(qrCodeData: string, program: any) {
     console.log('program: ', program);
-    let code = (qrCodeData).split(',');
+    let code = (qrCodeData).split('-');
     console.log('code read is: ', qrCodeData);
-    if(code.length === 1) {
+    /*if(code.length === 1) {
       code = (qrCodeData).split(':');
       console.log('code length is: ', JSON.stringify(code), code.length);
-    }
+    }*/
     console.log('code length is: ', JSON.stringify(code), code.length);
     const userId = code[0];
     const boardingPassId = code[1];
+		console.log('paso 22')
     let isCredential = false;
+		console.log('esto envia')
+		console.log(userId)
     const user = firebase.default.firestore().collection('users').doc(userId);
     return await user.get().then(async (querySnapShot) => {
-
+			console.log('el query snap');
+			console.log(querySnapShot.exists);
+			console.log(querySnapShot.data());
       if (querySnapShot.exists) {
 
         this.user = querySnapShot.data();
@@ -49,6 +54,7 @@ export class BoardingPassesService {
 
           if (code.length === 3) { isCredential = code[2] === 'C'; }
           if (isCredential) {
+						console.log('paso20')
             console.log('isCredential', isCredential);
             const credential: any = await this.validateCredential(userId, boardingPassId, program);
             credential.isCredential = true;
@@ -60,10 +66,13 @@ export class BoardingPassesService {
             console.log('if not, the isBoardingPass');
             const boardingPass: any = await this.validateBoardingPass(userId, boardingPassId, program);
             console.log('returned message from method: ', boardingPass);
+						console.log('paso 21')
+						console.log(boardingPass)
             boardingPass.isCredential = false;
             boardingPass.credentialId = null;
             boardingPass.code = qrCodeData;
             boardingPass.programId = program.id;
+						
             return boardingPass;
           }
 
@@ -317,7 +326,8 @@ export class BoardingPassesService {
             timestamp: Timestamp.fromDate((data.passValidation.lastUsed).toDate()),
             message: `Tu pase ya ha sido usado el día de hoy de ${programType} hace ${timeDistance} (${timeFormat}) en la unidad ${data.passValidation.lastUsedVehicle}`
           };
-
+					console.log('regresa el duplicado');
+					console.log(message)
           return message;
 
         }
@@ -351,12 +361,19 @@ export class BoardingPassesService {
   }
 
   async validateBoardingPass(userId: string, boardingPassId: string, program: any) {
+		console.log('driver id check qr');
+		console.log(userId);
+		console.log(boardingPassId);
+		console.log(program)
 
     const boardingPass = firebase.default.firestore().collection('users').doc(userId).collection('boardingPasses').doc(boardingPassId);
     return await boardingPass.get().then(querySnapshot => {
 
       const boardingPass = querySnapshot.data();
       const boardingPassId = querySnapshot.id;
+			console.log('esto bording');
+			console.log(boardingPassId)
+			// console.log(boardingPass.idBoardingPass)
       console.log('this is the data for the boardingPass acquired: ', boardingPass);
       let message = {};
 
@@ -368,23 +385,28 @@ export class BoardingPassesService {
         let today = new Date(date.setDate(date.getDate() - 1));
         const isBoardingPassValid = new Date() >= boardingPassValidFrom && today <= boardingPassValidTo && boardingPass.active;
         console.log('isBoardingPassValid, ', isBoardingPassValid);
+				console.log('paso 1');
+				console.log(isBoardingPassValid)
         if (isBoardingPassValid) {
-
+					console.log('paso 4');
           const actualKey = `${boardingPassId}${program.type}${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDate()}`;
           console.log(actualKey);
           let lastUserKey = '';
           if (boardingPass && boardingPass.passValidation && boardingPass.passValidation.validation) {
+						console.log('paso 5');
             lastUserKey = boardingPass.passValidation.validation;
           }
           const hasBeenUsedToday = actualKey === lastUserKey && !!boardingPass.passValidation.lastValidUsage;
-
+					console.log('paso 6');
+					console.log(hasBeenUsedToday)
           if (!hasBeenUsedToday) {
-
-            const customerAccount = firebase.default.firestore().collection('customers').doc(boardingPass.customer_id);
+						console.log('paso 7');
+						console.log(boardingPass.customerId)
+            const customerAccount = firebase.default.firestore().collection('customers').doc(boardingPass.customerId);
             return customerAccount.get().then(async (querySnapShot) => {
-
+							console.log('paso 8');
               if (querySnapShot.exists) {
-
+								console.log('paso 9');
                 console.log('account Exists: ', customerAccount);
 
                 const userCustomerAccount = querySnapShot.data();
@@ -395,10 +417,10 @@ export class BoardingPassesService {
                 const isSameRoute = forceRoute ? program.routeId === boardingPass.routeId : true;
                 const isSameRound = forceRound ? program.round === boardingPass.round : true;
                 const isCorrectMatch = isSameRoute && isSameRound;
-
+								console.log('paso 10');
                 console.log('isCorrectMatch: ', isCorrectMatch);
                 if (isCorrectMatch) {
-
+									console.log('paso 11');
                   const arrayUserFullName = this.user.displayName.split(' ');
                   const userFirstName = arrayUserFullName[0];
 
@@ -421,7 +443,7 @@ export class BoardingPassesService {
                   return message;
 
                 } else {
-
+									console.log('paso 12');
                   console.log('isSameRoute?', isSameRoute)
                   if (!isSameRoute) {
 
@@ -443,7 +465,7 @@ export class BoardingPassesService {
                     return message;
 
                   } else {
-
+										console.log('paso 13');
                     message = {
                       success: false,
                       type: 'round',
@@ -468,7 +490,7 @@ export class BoardingPassesService {
             })
 
           } else {
-
+						console.log('paso 14');
             const timeDistance = formatDistanceToNow(
               (boardingPass.passValidation.lastUsed).toDate(), {
               includeSeconds: true,
@@ -498,11 +520,13 @@ export class BoardingPassesService {
               timestamp: Timestamp.fromDate(boardingPass.passValidation.lastUsed.toDate()),
               message: `Tu pase ya ha sido usado el día de hoy de ${programType} hace ${timeDistance} (${timeFormat}) en la unidad ${boardingPass.passValidation.lastUsedVehicle}`
             };
-
+						console.log('paso 15');
+						console.log(message)
             return message;
           }
 
         } else {
+					console.log('paso2')
           message = {
             success: false,
             type: 'invalid',
@@ -522,6 +546,7 @@ export class BoardingPassesService {
         }
 
       } else {
+				console.log('paso3')
         message = {
           success: false,
           type: 'unknown',

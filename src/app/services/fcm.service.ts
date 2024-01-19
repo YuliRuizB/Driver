@@ -6,7 +6,7 @@ import { tap, map } from 'rxjs/operators';
 // Import firebase to fix temporary bug in AngularFire
 import * as app from 'firebase/compat';
 import { Observable, of } from 'rxjs';
-// import { FCM } from '@awesome-cordova-plugins/fcm/ngx';
+import { FCM } from '@awesome-cordova-plugins/fcm/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class FcmService {
   canShowMessages: Observable<any>;
 
   constructor(
-    // private afMessaging: FCM,
+    private afMessaging: FCM,
     private fun: AngularFireFunctions,
     private toastController: ToastController
   ) {

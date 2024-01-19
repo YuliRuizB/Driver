@@ -46,7 +46,11 @@ const routes: Routes = [
   {
     path: 'about',
     loadChildren: () => import('./contact-us/contact-us.module').then( m => m.ContactUsPageModule)
+  },  {
+    path: 'acces-data-info-modal',
+    loadChildren: () => import('./modals/acces-data-info-modal/acces-data-info-modal.module').then( m => m.AccesDataInfoModalPageModule)
   }
+
 ];
 
 @NgModule({

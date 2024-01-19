@@ -57,6 +57,7 @@ export class ProgramService {
   }
 
   getTodayActivePrograms(userId: string) {
+		console.log('esta entrando???');
     const today = startOfDay(new Date());
     const tomorrow = startOfTomorrow();
     const activePrograms = this.afs.collectionGroup('program', ref => 

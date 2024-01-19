@@ -4,7 +4,8 @@ import { Map, tileLayer } from "leaflet";
 import "leaflet-rotatedmarker";
 import "leaflet.marker.slideto";
 import { OnemapService } from "../services/data/onemap.service";
-import { Geolocation } from "@ionic-native/geolocation/ngx";
+// import { Geolocation } from "@ionic-native/geolocation/ngx";
+import { Geolocation } from '@awesome-cordova-plugins/geolocation/ngx';
 import {
   ToastController,
   ModalController,
@@ -23,10 +24,12 @@ import { map, take, filter } from "rxjs/operators";
 import { UsersService } from "../services/firebase/users.service";
 import { StorageService } from "../services/storage/storage.service";
 import { StationInfoPage } from "./station-info/station-info.page";
-// import { FCM } from "@ionic-native/fcm/ngx";
+import { FCM } from "@ionic-native/fcm/ngx";
 import { OsrmService } from "../services/osrm/osrm.service";
 import esLocale from "date-fns/locale/es";
 import { LivepositionService } from '../../app/shared/services/liveposition.service';
+import { AccesDataInfoModalPage } from './../modals/acces-data-info-modal/acces-data-info-modal.page';
+import { AndroidPermissions }  from '@ionic-native/android-permissions/ngx';
 
 @Component({
   selector: "app-home",
@@ -69,10 +72,11 @@ export class HomePage implements OnInit {
     public alertController: AlertController,
     private usersService: UsersService,
     private storageService: StorageService,
-    // private fcm: FCM,
+    private fcm: FCM,
     private osrmService: OsrmService,
     private routerOutlet: IonRouterOutlet,
-		private _LivepositionService: LivepositionService
+		private _LivepositionService: LivepositionService,
+		private _AndroidPermissions:AndroidPermissions
   ) { }
 
   ionViewDidEnter() {
@@ -88,6 +92,30 @@ export class HomePage implements OnInit {
         this.requestDefaultRoute();
       }
     });
+
+		this._LivepositionService.coordsObsr().subscribe(async (resp) => {
+			console.log('check');
+			console.log(resp);
+			if (resp === 2) {
+				const accessFineLocationPermission3 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION);
+				if (accessFineLocationPermission3.hasPermission === false) {
+					this.accesDataInfoModal(3);
+				}
+			}
+		})
+  }
+
+	async accesDataInfoModal(flag: number) {
+    const modal = await this.modalController.create({
+      component: AccesDataInfoModalPage,
+      componentProps: { value:  flag},
+			showBackdrop:true,
+			backdropDismiss:false,
+    });
+		modal.onDidDismiss().then((result)=>{
+
+		});
+    await modal.present();
   }
 
   loadMapAfterSubscriptions() {
@@ -110,7 +138,7 @@ export class HomePage implements OnInit {
   }
 
   validateToken() {
-    /*this.fcm.getToken().then((token) => {
+    this.fcm.getToken().then((token) => {
       console.log("getToken() from homepage");
       this.usersService.registerToken(this.user.uid, token);
     });
@@ -122,7 +150,7 @@ export class HomePage implements OnInit {
       console.log("getAPNSToken() from homepage");
       this.usersService.registerAPNSToken(this.user.uid, token);
     });
-		*/
+		
   }
 
   async requestDefaultRoute() {

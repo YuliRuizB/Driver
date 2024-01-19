@@ -116,7 +116,7 @@ export class ScanPage implements OnInit, OnDestroy {
     .subscribe(program => {
       this.program = program.payload.data();
       this.program.id = program.payload.id;
-        console.log(this.program);
+        // console.log(this.program);
         // this.validateQRCode('FyXKSXsUbYNtAbWL7zZ66o2f1M92,gBjsZWpfJ2NlvZQgh4AJ')
     });
   }
@@ -270,6 +270,8 @@ export class ScanPage implements OnInit, OnDestroy {
 
 
   async validateQRCode(code: string) {
+		console.log('esto escanea');
+		console.log(code);
     const isValidQRCode = await this.boardingPassesService.validate(code, this.program);
     console.log(isValidQRCode);
     if(isValidQRCode.success) {

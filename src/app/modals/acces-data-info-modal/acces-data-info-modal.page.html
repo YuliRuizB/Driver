@@ -1,0 +1,70 @@
+<ion-header class="ion-no-border" >
+  <ion-toolbar color="ligth">
+		<!--<ion-buttons slot="start" (click)="close()">
+      <ion-button  color="dark">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+	-->
+
+		<ion-title color="dark" mode="ios" *ngIf="flag === 1"> 
+			Acceso a Datos
+    </ion-title>
+		<ion-title color="dark" mode="ios" *ngIf="flag === 2"> 
+			Acceso a Gps
+    </ion-title>
+
+		<ion-title color="dark" mode="ios" *ngIf="flag === 3"> 
+			Gps en segundo plano
+    </ion-title>
+		
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<div class="padding" *ngIf="flag === 1">
+		<h3>Acceso al GPS y GPS en Segundo Plano - Aviso de Privacidad</h3>
+		<p>Para garantizar una experiencia óptima y brindar un servicio eficiente, nuestra aplicación requiere acceso al GPS de su dispositivo. 
+			Este acceso nos permite proporcionar características clave, como la ubicación en tiempo real, 
+			navegación precisa y servicios personalizados basados en la ubicación.
+		</p>
+
+		<p>
+			Además, para asegurar un rendimiento continuo y ofrecer funcionalidades específicas, 
+			la aplicación puede necesitar acceder al GPS en segundo plano, incluso cuando no está activamente en uso. 
+			Esta funcionalidad es esencial para proporcionar servicios como seguimiento de rutas, 
+			alertas de proximidad y notificaciones basadas en la ubicación.
+		</p>
+
+		<p>
+			Queremos destacar que respetamos su privacidad y tomamos medidas rigurosas para garantizar la seguridad y confidencialidad de la información de ubicación. 
+			No compartiremos su ubicación con terceros sin su consentimiento explícito, 
+			y todos los datos de ubicación se manejan de acuerdo con nuestras políticas de privacidad.
+		</p>
+
+		<ion-button expand="block" class="" size="large" (click)="close(1)" >Continuar</ion-button>
+	</div>
+
+	<div class="padding" *ngIf="flag === 2">
+		<p>Para continuar se requiere el acceso a su gps.
+		</p>
+
+		<ion-button *ngIf="flagValid === 1" expand="block" class="" size="large" (click)="permission()" >Solicitar Permiso</ion-button>
+		<ion-button *ngIf="flagValid === 2" expand="block" class="" size="large" (click)="closeApp()" >Finalizar App</ion-button>
+		<!--<ion-button expand="block" class="" size="large" (click)="close(1)" >Continuar</ion-button>-->
+	</div>
+
+	<div class="padding" *ngIf="flag === 3">
+		<p>Se requiere el acceso a su gps en segundo plano. Porfavor presione Solicitar permisos.
+		</p>
+
+		<p>1-La aplicacion lo mandara a la configuracion de la aplicacion</p>
+		<p>2- Seleccione la opcione 'Permisos'</p>
+		<p>3- Seleccione la opcion 'Ubicacion'</p>
+		<p>4- Seleccione la opcion 'Permitir todo el tiempo' o 'Allow all the time'</p>
+		<p>Regrese a la app para seguir el proceso de inicio de sesion.</p>
+		<ion-button  expand="block" class="" size="large" (click)="permissionSettings()" >Solicitar Permiso</ion-button>
+		<ion-button  expand="block" class="" size="large" (click)="permissionSettingsClose()" >Continuar</ion-button>
+		<!--<ion-button expand="block" class="" size="large" (click)="close(1)" >Continuar</ion-button>-->
+	</div>
+</ion-content>

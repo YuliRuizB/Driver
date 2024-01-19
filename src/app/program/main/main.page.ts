@@ -9,7 +9,8 @@ import * as _ from 'lodash';
 import { LivepositionService } from '@shared/services/liveposition.service';
 import { Storage } from '@ionic/storage-angular';
 import { differenceInMinutes } from 'date-fns';
-import { AndroidPermissions }  from '@awesome-cordova-plugins/android-permissions/ngx';
+// import { AndroidPermissions }  from '@awesome-cordova-plugins/android-permissions/ngx';
+import { AndroidPermissions }  from '@ionic-native/android-permissions/ngx';
 @Component({
   selector: 'app-main',
   templateUrl: './main.page.html',
@@ -36,7 +37,8 @@ export class MainPage implements OnInit, OnDestroy {
 
   ngOnInit() {
 		this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION).then((result) => {
-      console.log('esto regresa');
+      
+			console.log('esto regresa');
 			console.log(result);
 			/*this._AndroidPermissions.requestPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION).then((data:any) => {
 				console.log('request')
@@ -94,7 +96,7 @@ export class MainPage implements OnInit, OnDestroy {
         return { id: id, path: docPath, ...data };
       })))
       .subscribe((program: any) => {
-        console.log(program);
+        //console.log(program);
         this.organizeProgram(program);
       });
   }
@@ -104,7 +106,7 @@ export class MainPage implements OnInit, OnDestroy {
     this.featuredProgram = [];
     let orderedProgram = _.sortBy(unorderedProgram, [ function(p) {
       let startDate = p.startAt.toDate();
-      console.log(startDate);
+      // console.log(startDate);
       
       return startDate;
     }])
@@ -116,6 +118,9 @@ export class MainPage implements OnInit, OnDestroy {
       return !!p.hasEnded;
     });
     // console.log(this.finishedProgram);
+
+		// console.log('superrrrrrrrrr mal')
+		// console.log(activeProgram);
     if(activeProgram.length > 0) {
       this.featuredProgram.push(activeProgram[0]);
       this.program = [];
@@ -251,7 +256,7 @@ export class MainPage implements OnInit, OnDestroy {
         const selectedProgramStartsAt = selectedProgram.startAt.toDate();
         const actualDate = new Date();
         const timeDiff = Math.abs(differenceInMinutes(actualDate, selectedProgramStartsAt));
-        console.log(timeDiff);
+        // console.log(timeDiff);
         
          // if(!this.isLiveProgram && timeDiff <= 60) {
 

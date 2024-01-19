@@ -101,7 +101,7 @@ export class NavigationPage implements OnInit, OnDestroy {
       .subscribe(program => {
         this.program = program.payload.data();
         this.program.id = program.payload.id;
-        console.log(this.program);
+        // console.log(this.program);
         this.loading = false;
       });
 
@@ -123,6 +123,8 @@ export class NavigationPage implements OnInit, OnDestroy {
           this.flyToSlider(this.slides);
           return;
         }
+
+				console.log('trece44444444444444444444444444444444444444444444')
         this.addRoutePolyline(this.stopPoints);
         setTimeout(() => {
           this.addStopPoints(this.stopPoints);
@@ -345,7 +347,7 @@ export class NavigationPage implements OnInit, OnDestroy {
     this.mapService.addGeopointsLayer(this.mapService.map, 'stoppoints', features);
   }
 
-  createRouteFromStopPoints(stopPoints: Array<any>) {
+  async createRouteFromStopPoints(stopPoints: Array<any>) {
 
     let coordinates = '';
     let radiuses = '';
@@ -358,12 +360,23 @@ export class NavigationPage implements OnInit, OnDestroy {
       radiuses += '49;'
       timestamps += +((new Date().getTime() / 1000) + (count * 60)).toFixed(0) + ';';
     });
-    this.presentLoading('Cargando ruta');
+		console.log('se llamaaaaaaaaaaaaaaaaaaaaaaa555555555555555555')
+    // this.presentLoading('Cargando ruta');
+		this.loadingCtrl = await this.loadingController.create({
+      message: 'Cargando ruta',
+      spinner: 'dots',
+      translucent: true
+    });
+
+    await this.loadingCtrl.present();
     this.osrmService.getMatchService(
       'driving',
       coordinates.substring(0, coordinates.length - 1),
       radiuses.substring(0, radiuses.length - 1),
       timestamps.substring(0, timestamps.length - 1)).subscribe((response: any) => {
+				console.log('4444444444444444444444444444444444444444')
+				console.log(this.loadingCtrl);
+				// this.loadingCtrl.dismiss();
         let polylineArray = [];
         const tracepoints = response.matchings[0].geometry.coordinates;
         _.map(tracepoints, (point) => {
@@ -371,15 +384,29 @@ export class NavigationPage implements OnInit, OnDestroy {
             polylineArray.push([point[0], point[1]]);
           }
         })
-        setTimeout(() => {if(!!this.loadingCtrl) {
+				this.loadingCtrl.dismiss();
+        setTimeout(() => {
+				this.loadingCtrl.dismiss()
+				if(!!this.loadingCtrl) {
           this.loadingCtrl.dismiss();
           // this.onScanButtonClicked();  
         }
-        }, 2000);
+        }, 4000);
+				
+
+				setTimeout(() => {
+					this.loadingCtrl.dismiss()
+					if(!!this.loadingCtrl) {
+						this.loadingCtrl.dismiss();
+						// this.onScanButtonClicked();  
+					}
+					}, 8000);
         this.mapService.addGEOLine(this.mapService.map, 'route', polylineArray, this.flyToZero);
+				// this.loadingCtrl.dismiss();
       },(error) => {
 				console.log('ali');
 				console.log(error);
+				this.loadingCtrl.dismiss();
 			})
   } 
 
