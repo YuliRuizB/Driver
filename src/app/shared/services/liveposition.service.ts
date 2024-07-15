@@ -91,12 +91,18 @@ export class LivepositionService {
 
 	async callGps() {
 		// console.log('entraaaaa11111111111111');
+		let contCallsFire = 0;
 		this.geolocationSubscription = this.geolocation.watchPosition().pipe(
       filter((position) => (position as Geoposition).coords !== undefined)
       ).subscribe((position: Geoposition) => {
-        console.log('ali'+position.coords.longitude + ' ' + position.coords.latitude);
-        this.currentLocation = position;
-        this.updateLiveProgram(position);
+				if (contCallsFire > 15) {
+					//console.log('ali'+position.coords.longitude + ' ' + position.coords.latitude);
+					this.currentLocation = position;
+					this.updateLiveProgram(position);
+					contCallsFire = 0;
+				}else{
+					contCallsFire++;
+				}
     },(error) => {
 			console.log('error');
 			console.log(error)
@@ -157,8 +163,8 @@ export class LivepositionService {
 			// console.log('entrooo>4423423');
       if(isLiveProgram) {
         this.storage.get('liveProgramDocument').then( path => {
-					// console.log('veo el path');
-					// console.log(path)
+					console.log('veo el path');
+					console.log(path)
           if(!!path) {
 						// console.log('entra el if????');
             // console.log('path is: ', path);

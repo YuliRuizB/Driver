@@ -14,4 +14,85 @@ $categories: (
   }
 }
 
+.box {
+	width: 250px;
+	height: 250px;
+	margin: 70px auto;
+	background: transparent;
+	position: relative;
+}
+/*
+.box:before {
+	position: absolute;
+	content: "";
+	width: 30px;
+	height: 30px;
+	top: -2px;
+	left: -2px;
+	z-index:-1;
+	border-left: 2px solid white;
+	border-top: 2px solid white;
+}*/
+
+.box1 {
+	position: absolute;
+	content: "";
+	width: 30px;
+	height: 30px;
+	top: -2px;
+	left: -2px;
+	z-index:-1;
+	border-left: 2px solid white;
+	border-top: 2px solid white;
+}
+
+.box2 {
+	position: absolute;
+	content: "";
+	width: 30px;
+	height: 30px;
+	top: -2px;
+	right: -2px;
+	z-index:-1;
+	border-right: 2px solid white;
+	border-top: 2px solid white;
+}
+
+
+.box3 {
+	position: absolute;
+	content: "";
+	width: 30px;
+	height: 30px;
+	bottom: -2px;
+	left: -2px;
+	z-index:-1;
+	border-left: 2px solid white;
+	border-bottom: 2px solid white;
+}
+
+.box4 {
+	position: absolute;
+	content: "";
+	width: 30px;
+	height: 30px;
+	bottom: -2px;
+	right: -2px;
+	z-index:-1;
+	border-right: 2px solid white;
+	border-bottom: 2px solid white;
+}
+/*
+.box:after {
+	position: absolute;
+	content: "";
+	width: 30px;
+	height: 30px;
+	right: -2px;
+	bottom: -2px;
+	z-index:-1;
+	border-right: 2px solid white;
+	border-bottom: 2px solid white;
+}*/
+
 

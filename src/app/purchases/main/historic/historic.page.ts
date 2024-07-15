@@ -62,7 +62,7 @@ export class HistoricPage implements OnInit {
         return { id, ...data };
       }))
     ).subscribe((purchases: any) => {
-      console.log(purchases);
+ 
       this.purchases = purchases;
       this.loading = false;
     })
@@ -78,7 +78,7 @@ export class HistoricPage implements OnInit {
         return { id, ...data };
       }))
     ).subscribe((purchaseRequests: any) => {
-      console.log(purchaseRequests);
+   
       this.purchaseRequests = _.filter(purchaseRequests, (p) => {
         return new Date(p.due_date) >= new Date();
       })
@@ -88,13 +88,13 @@ export class HistoricPage implements OnInit {
   }
 
   showDetails(boardingPassCard) {
-    console.log('showDetails', boardingPassCard);
+   
     this.boardingPassSelected = true;
     this.selectedBoardingPass = boardingPassCard;
     this.selectedBoardingPassValidFrom = new Date(this.selectedBoardingPass.validFrom.seconds * 1000);
     this.selectedBoardingPassValidTo = new Date(this.selectedBoardingPass.validTo.seconds * 1000);
     this.isBoardingPassValid = this.showQRCode = new Date() >= this.selectedBoardingPassValidFrom && new Date() <= this.selectedBoardingPassValidTo;
-    console.log(this.isBoardingPassValid);
+
   }
 
 }

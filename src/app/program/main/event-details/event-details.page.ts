@@ -35,7 +35,7 @@ export class EventDetailsPage implements OnInit, OnDestroy {
     .subscribe((response) => {
       this.auditLog = response.payload.data();
       this.auditLog.id = response.payload.id;
-      console.log(this.auditLog);
+
       this.loading = false;
     })
   }

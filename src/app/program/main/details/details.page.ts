@@ -40,7 +40,7 @@ export class DetailsPage implements OnInit {
       
       .subscribe( program => {
         this.program = program.payload.data();
-        // console.log(this.program);
+  
         this.loading = false;
       })
   }
@@ -48,12 +48,6 @@ export class DetailsPage implements OnInit {
   canStartProgram(program) {
     if(this.program.length > 0) {
       const today = endOfToday();
-      console.log(!program.hasEnded && !program.isLive && !program.isWithTrouble && program.startAt.toDate() <= today);
-      console.log(!program.hasEnded);
-      console.log(!program.isLive);
-      console.log(!program.isWithTrouble);
-      console.log(program.startAt <= today);
-      console.log(program);
       return !program.hasEnded && !program.isLive && !program.isWithTrouble && program.startAt.toDate() <= today;
     }
     return false;

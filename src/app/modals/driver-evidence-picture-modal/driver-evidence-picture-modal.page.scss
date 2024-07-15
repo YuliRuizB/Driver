@@ -1,0 +1,68 @@
+.camera1 {
+	width: 100%;
+	height: 150px;
+
+	// padding: 15px;
+	// height: 100px;
+	border-radius: 20px;
+	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.camera3 {
+	width: 100%;
+	height: 120px;
+
+	// padding: 15px;
+	// height: 100px;
+	border-radius: 20px;
+	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.camera2 {
+	width: 50%;
+	height: 150px;
+
+	// padding: 15px;
+	// height: 100px;
+	border-radius: 20px;
+	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.subcam {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 100%;
+	align-items: center;
+}
+
+.text1 {
+	width: 100%;
+	// height: 150px;
+	border-radius: 20px;
+	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+#heart img{
+  position:absolute;
+  left:0;
+  right:0;
+  margin:0 auto;
+}
+  
+@keyframes heartFadeInOut {
+  0% {transform: scale(1);}
+  25% {transform: scale(.97);}
+  35% {transform: scale(.9);}
+  45% {transform: scale(1.1);}
+  55% {transform: scale(.9);}
+  65% {transform: scale(1.1);}
+  75% {transform: scale(1.03);}
+  100% {transform: scale(1);}
+}
+  
+#heart img.bottom { 
+  animation-name: heartFadeInOut !important; 
+  animation-iteration-count: infinite !important;
+  animation-duration: 2s !important;
+}

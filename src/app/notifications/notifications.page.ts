@@ -27,7 +27,7 @@ export class NotificationsPage implements OnInit {
     'saturday': 'Sáb'
   }
 
-  constructor(/*private fcm: FCM, */public plt: Platform, private usersService: UsersService, private storageService: StorageService, public alertController: AlertController) {
+  constructor(private fcm: FCM, public plt: Platform, private usersService: UsersService, private storageService: StorageService, public alertController: AlertController) {
     this.storageService.getItem('userData').then((userData) => {
       this.user = JSON.parse(userData);
       this.getSubscriptions();
@@ -63,7 +63,6 @@ export class NotificationsPage implements OnInit {
   toggleActive(slidingItem: IonItemSliding, reminder) {
     reminder.active = !reminder.active;
     this.usersService.updateReminder(this.user.uid, reminder.id, reminder).then((response) => {
-      console.log(response);
       if(reminder.active) {
         this.subscribeToTopic(reminder.stationId)
       } else {
@@ -104,7 +103,6 @@ export class NotificationsPage implements OnInit {
           text: 'Eliminar',
           handler: () => {
             this.usersService.deleteReminder(this.user.uid, reminder.id).then((response) => {
-              console.log(response);
               slidingItem.close();
             })
           }

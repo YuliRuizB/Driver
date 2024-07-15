@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProgramService, Updates } from '@shared/services/program.service';
 import { StopPointsService } from '@shared/services/stop-points.service';
 import { Subject, Subscription } from 'rxjs'
-import { map, takeUntil } from 'rxjs/operators';
+import { map, takeUntil, take } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { OsrmService } from '@shared/services/osrm.service';
 import { IonSlides, ActionSheetController, LoadingController, IonSearchbar, ToastController, AlertController } from '@ionic/angular';
@@ -13,7 +13,8 @@ import { ActivityLogService } from '@shared/services/activity-log.service';
 import { format, formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Vibration } from '@awesome-cordova-plugins/vibration/ngx';
-
+import { Console } from 'console';
+declare  var google;
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.page.html',
@@ -47,7 +48,8 @@ export class NavigationPage implements OnInit, OnDestroy {
   scanning: boolean = false;
   currentLocation: any;
 
-
+	public directionsService:      any;
+  public polygon:                any= [];
   constructor(
     private mapService: MapService,
     private vibration: Vibration,
@@ -68,6 +70,7 @@ export class NavigationPage implements OnInit, OnDestroy {
     ).subscribe( (position) => {
       this.currentLocation = position;
     });
+		this.directionsService = new google.maps.DirectionsService();
    }
 
   ngOnInit() {
@@ -101,11 +104,12 @@ export class NavigationPage implements OnInit, OnDestroy {
       .subscribe(program => {
         this.program = program.payload.data();
         this.program.id = program.payload.id;
-        // console.log(this.program);
+  
         this.loading = false;
       });
 
     this.stopPointsSubscription = this.stopPointsService.getRouteStopPoint(this.customerId, this.routeId).pipe(
+			take(1),
       map(actions => actions.map(a => {
         const data = a.payload.doc.data() as any;
         const id = a.payload.doc.id;
@@ -117,14 +121,13 @@ export class NavigationPage implements OnInit, OnDestroy {
         } else {
           this.stopPoints = _.orderBy(stopPoints, 'order', 'asc');
         }
-        console.log(this.stopPoints);
+   
         const mapLayer = this.mapService.map.getLayer('route');
         if(typeof mapLayer !== 'undefined') {
           this.flyToSlider(this.slides);
           return;
         }
 
-				console.log('trece44444444444444444444444444444444444444444444')
         this.addRoutePolyline(this.stopPoints);
         setTimeout(() => {
           this.addStopPoints(this.stopPoints);
@@ -139,7 +142,6 @@ export class NavigationPage implements OnInit, OnDestroy {
 
   flyToSlider(slides: IonSlides) {
     slides.getActiveIndex().then(activeIndex => {
-      console.log(activeIndex);
       this.mapService.flyTo(this.mapService.map, this.stopPoints[activeIndex]);
     })
   }
@@ -162,7 +164,7 @@ export class NavigationPage implements OnInit, OnDestroy {
   }
 
   onSearchInputDebounced(event) {
-    console.log(event);
+
     if(!this.scanning) {
       return;
     }
@@ -179,7 +181,7 @@ export class NavigationPage implements OnInit, OnDestroy {
   async validateQRCode(code: string) {
     this.scanning = false;
     const isValidQRCode = await this.boardingPassesService.validate(code, this.program);
-    console.log(isValidQRCode);
+  
     if(isValidQRCode.success) {
       let color = 'success';
       let message = isValidQRCode.message;
@@ -219,7 +221,8 @@ export class NavigationPage implements OnInit, OnDestroy {
   }
 
   async presentActionSheet(el: any) {
-
+		// console.log('BBBBBBBBBB')
+		// console.log(el.type)
     let buttons = [];
     
     if(el.type == 'unknown') {
@@ -227,15 +230,28 @@ export class NavigationPage implements OnInit, OnDestroy {
         text: 'Más información',
         icon: 'information-circle-outline',
         handler: () => {
-          console.log('Delete clicked');
+        
           this.presentAlertConfirm(el);
         }
-      }, {
+      }, 
+			/*{
+        // text: 'Permitir subir (Enterado)',
+				text: 'Reportar',
+        icon: 'log-in-outline',
+        handler: () => {
+          console.log('Share clicked');
+          el.validUsage = false;
+          el.updateData = true;
+          el.allowedOnBoard = true;
+          this.recordActivityLog(el)
+        }
+      },*/
+			{
         text: 'Reintentar',
         icon: 'sync-outline',
         role: 'cancel',
         handler: () => {
-          console.log('Cancel clicked');
+      
           this.setScannerReady();
         }
       }];
@@ -244,7 +260,7 @@ export class NavigationPage implements OnInit, OnDestroy {
         text: 'Más información',
         icon: 'information-circle-outline',
         handler: () => {
-          console.log('Delete clicked');
+
           this.presentAlertConfirm(el);
         }
       }, {
@@ -252,17 +268,18 @@ export class NavigationPage implements OnInit, OnDestroy {
         role: 'destructive',
         icon: 'log-out-outline',
         handler: () => {
-          console.log('Delete clicked');
+ 
           el.validUsage = false;
           el.updateData = true;
           el.allowedOnBoard = false;
           this.recordActivityLog(el)
         }
       }, {
-        text: 'Permitir subir (Enterado)',
+        // text: 'Permitir subir (Enterado)',
+				text: 'Reportar',
         icon: 'log-in-outline',
         handler: () => {
-          console.log('Share clicked');
+
           el.validUsage = false;
           el.updateData = true;
           el.allowedOnBoard = true;
@@ -273,7 +290,7 @@ export class NavigationPage implements OnInit, OnDestroy {
         icon: 'sync-outline',
         role: 'cancel',
         handler: () => {
-          console.log('Cancel clicked');
+
           this.setScannerReady();
         }
       }];
@@ -313,7 +330,7 @@ export class NavigationPage implements OnInit, OnDestroy {
         {
           text: 'Enterado',
           handler: () => {
-            console.log('Confirm Okay');
+   
             this.presentActionSheet(el);
           }
         }
@@ -360,7 +377,7 @@ export class NavigationPage implements OnInit, OnDestroy {
       radiuses += '49;'
       timestamps += +((new Date().getTime() / 1000) + (count * 60)).toFixed(0) + ';';
     });
-		console.log('se llamaaaaaaaaaaaaaaaaaaaaaaa555555555555555555')
+
     // this.presentLoading('Cargando ruta');
 		this.loadingCtrl = await this.loadingController.create({
       message: 'Cargando ruta',
@@ -369,13 +386,186 @@ export class NavigationPage implements OnInit, OnDestroy {
     });
 
     await this.loadingCtrl.present();
-    this.osrmService.getMatchService(
+
+		let split1: any = coordinates.split(';');
+		let coords = [];
+		let coords2 = [];
+
+		for(let x = 0; x < split1.length-1; x++) {
+			let split2 = split1[x].split(',')
+			coords.push([parseFloat(split2[1]),  parseFloat(split2[0])])
+		}
+
+		let waypts = [];
+		let encodeString = [];
+		let encodeString3 = [];
+		let dataReturn = [];
+		for (let x = 0; x < coords.length; x ++) {
+			waypts.push({
+				location: {
+					lat: coords[x][0],
+					lng: coords[x][1],
+				}
+			})
+		}
+
+
+		await this.directionsService.route({
+			origin: new google.maps.LatLng(coords[0][0], coords[0][1]),
+			waypoints: waypts,
+			destination: new google.maps.LatLng(coords[coords.length-1][0], coords[coords.length-1][1]),
+			travelMode: 'DRIVING',
+		},async (response, status)=>{
+
+			if (status === "ZERO_RESULTS") {
+				this.presentToast('No hay resultados para la ruta', 'danger', 3000, '');
+				this.loadingCtrl.dismiss();
+				this.mapService.addGEOLine(this.mapService.map, 'route', [], this.flyToZero);
+				return;				
+			}
+
+			if (status === 'OK') {
+				let polylinePath = response.routes[0].overview_polyline;
+				let encodePath: string = polylinePath;
+				let encodeString2 = google.maps.geometry.encoding.decodePath(encodePath);
+				for(var x = 0; x < encodeString2.length; x++) {
+					// { markers: { lat: encodeString2[x].lat(), lng: encodeString2[x].lng() }}
+					encodeString.push(
+						// [ encodeString2[x].lat(), encodeString2[x].lng()]
+						// [ encodeString3[x].lng(), encodeString3[x].lat()]
+						[ encodeString2[x].lng(), encodeString2[x].lat()]
+					);
+				}
+				// console.log('')
+				// console.log(encodeString)
+				this.loadingCtrl.dismiss();
+				this.mapService.addGEOLine(this.mapService.map, 'route', encodeString, this.flyToZero);
+
+			}
+
+			if (status === 'MAX_WAYPOINTS_EXCEEDED') {
+				let check = coords.length;
+
+				let coordsA1;
+				let coordsA2;
+
+				let coordsB1;
+				let coordsB2;
+				if (check > 20) {
+		
+					coordsA1 = {coords1: coords[0][0], coords2: coords[0][1] };
+					coordsA2 = {coords1: coords[20][0], coords2: coords[20][1] };
+
+					coordsB1 = {coords1: coords[21][0], coords2: coords[21][1] };
+					coordsB2 = {coords1: coords[coords.length-1][0], coords2: coords[coords.length-1][1] };
+				}
+
+				if (check >= 49) {
+					this.presentToast('No se puede obtener la ruta, consulte con soporte tecnico', 'danger', 3000, '');
+					return
+				}
+
+				let way1 = [];
+				let way2 = []
+				for (let x = 0; x < 21; x ++) {
+					way1.push({
+						location: {
+							lat: coords[x][0],
+							lng: coords[x][1],
+						}
+					})
+				}
+
+				for (let x = 20; x < coords.length; x ++) {
+					way2.push({
+						location: {
+							lat: coords[x][0],
+							lng: coords[x][1],
+						}
+					})
+				}
+
+				let array1 = [];
+				let array2 = [];
+				let size = 0;
+				for (let x = 0; x < 2; x++) {
+
+					let init = x === 0 ? coordsA1 : coordsB1;
+					let fin = x === 0 ? coordsA2 : coordsB2;
+					let wayptsAux = x === 0 ? way1 : way2;
+
+					await this.directionsService.route({
+						origin: new google.maps.LatLng(init.coords1, init.coords2),
+						waypoints: wayptsAux,
+						destination: new google.maps.LatLng(fin.coords1, fin.coords2),
+						travelMode: 'DRIVING',
+					},(response, status)=>{
+	
+						if (status === "ZERO_RESULTS") {
+							this.presentToast('No hay resultados para la ruta', 'danger', 3000, '');
+							this.loadingCtrl.dismiss();
+							this.mapService.addGEOLine(this.mapService.map, 'route', [], this.flyToZero);
+							return;				
+						}
+			
+						if (status === 'OK') {
+							array1.push(response.routes[0].overview_polyline)
+							/*let polylinePath = response.routes[0].overview_polyline;
+							let encodePath: string = polylinePath;
+							let encodeString2 = google.maps.geometry.encoding.decodePath(encodePath);
+							for(var x = 0; x < encodeString2.length; x++) {
+								encodeString.push(
+									[ encodeString2[x].lng(), encodeString2[x].lat()]
+								);
+							}
+							this.loadingCtrl.dismiss();
+							this.mapService.addGEOLine(this.mapService.map, 'route', encodeString, this.flyToZero);
+							*/
+						}
+					})
+				}
+
+				/*console.log('arayys');
+				console.log(array1)
+				let polylinePath =  array1[0]+"|"+array1[1];// array1[0].concat(array1[1]);;
+				console.log(polylinePath)
+				*/
+				
+				let polylinePath =  array1[0]
+				let encodePath: string = polylinePath;
+				let encodeString2 = google.maps.geometry.encoding.decodePath(encodePath);
+				for(var x = 0; x < encodeString2.length; x++) {
+					encodeString.push(
+						[ encodeString2[x].lng(), encodeString2[x].lat()]
+					);
+				}
+
+
+				let polylinePath2 =  array1[1]
+				let encodePath2: string = polylinePath2;
+				let encodeString32 = [];
+				let encodeString22 = google.maps.geometry.encoding.decodePath(encodePath2);
+				for(var x = 0; x < encodeString22.length; x++) {
+					encodeString32.push(
+						[ encodeString22[x].lng(), encodeString22[x].lat()]
+					);
+				}
+
+				let enc = encodeString.concat(encodeString32)
+				this.loadingCtrl.dismiss();
+				this.mapService.addGEOLine(this.mapService.map, 'route', enc, this.flyToZero);
+
+			
+
+			}
+
+		})
+    /*this.osrmService.getMatchService(
       'driving',
       coordinates.substring(0, coordinates.length - 1),
       radiuses.substring(0, radiuses.length - 1),
       timestamps.substring(0, timestamps.length - 1)).subscribe((response: any) => {
-				console.log('4444444444444444444444444444444444444444')
-				console.log(this.loadingCtrl);
+
 				// this.loadingCtrl.dismiss();
         let polylineArray = [];
         const tracepoints = response.matchings[0].geometry.coordinates;
@@ -404,10 +594,10 @@ export class NavigationPage implements OnInit, OnDestroy {
         this.mapService.addGEOLine(this.mapService.map, 'route', polylineArray, this.flyToZero);
 				// this.loadingCtrl.dismiss();
       },(error) => {
-				console.log('ali');
-				console.log(error);
+
 				this.loadingCtrl.dismiss();
 			})
+			*/
   } 
 
   async showRouteOptions() {
@@ -417,7 +607,7 @@ export class NavigationPage implements OnInit, OnDestroy {
         text: 'Reportar unidad llena',
         icon: 'body-outline',
         handler: () => {
-          console.log('Delete clicked');
+ 
           this.programService.updateProgram(Updates.unitFull, this.program.customerId, this.programId, 'Unidad llena', 'bus_full');
         }
       }, {
@@ -425,14 +615,14 @@ export class NavigationPage implements OnInit, OnDestroy {
         role: 'destructive',
         icon: 'warning-outline',
         handler: () => {
-          console.log('Share clicked');
+   
           this.presentProblemReasons(this.program);
         }
       }, {
         text: 'Finalizar ruta',
         icon: 'checkmark-done-outline',
         handler: () => {
-          console.log('Play clicked');
+  
           this.router.navigate(['main/finish', this.programId, this.program.customerId])
         }
       }, {
@@ -440,7 +630,7 @@ export class NavigationPage implements OnInit, OnDestroy {
         icon: 'close',
         role: 'cancel',
         handler: () => {
-          console.log('Cancel clicked');
+       
         }
       }]
     });
@@ -453,26 +643,26 @@ export class NavigationPage implements OnInit, OnDestroy {
       buttons: [{
         text: 'Unidad descompuesta',
         handler: () => {
-          console.log('Delete clicked');
+  
           this.programService.updateProgram(Updates.problem, selectedProgram.customerId, this.programId, 'Unidad descompuesta', 'bus_danger');
         }
       }, {
         text: 'Llanta(s) ponchada(s)',
         handler: () => {
-          console.log('Share clicked');
+     
           this.programService.updateProgram(Updates.problem, selectedProgram.customerId, this.programId, 'Llanta(s) ponchada(s)', 'bus_tires');
         }
       }, {
         text: 'Envíen ayuda',
         handler: () => {
-          console.log('Share clicked');
+ 
           this.programService.updateProgram(Updates.problem, selectedProgram.customerId, this.programId, 'Envíen ayuda', 'assistance_needed');
         }
       }, {
         text: 'Cancelar',
         role: 'cancel',
         handler: () => {
-          console.log('Cancel clicked');
+  
           this.showRouteOptions();
         }
       }]

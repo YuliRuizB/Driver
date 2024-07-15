@@ -37,7 +37,7 @@ export class ProductDetailsPage implements OnInit {
     private storageService: StorageService,
     public modalController: ModalController) { 
     this.productId = this.activatedRoute.snapshot.paramMap.get('id');
-    console.log(this.productId);
+
   }
 
   ngOnInit() {
@@ -63,7 +63,7 @@ export class ProductDetailsPage implements OnInit {
         return { id, ...data };
     })
     ).subscribe( (product) => {
-      console.log(product);
+  
       this.product = product;
       this.loading = false;
     });
@@ -75,7 +75,7 @@ export class ProductDetailsPage implements OnInit {
         return { id, ...data };
       }))
     ).subscribe( (stoppoints) => {
-      console.log(stoppoints);
+  
       this.stopPoints = _.sortBy(stoppoints, "name", "desc");
       this.loading = false;
     });
@@ -126,22 +126,22 @@ export class ProductDetailsPage implements OnInit {
     
     modal.onWillDismiss().then(stopPoint => {
       const stopPointSelected = stopPoint.data.data;
-      console.log(stopPointSelected);
+     
       this.productDetailsForm.controls['stopName'].setValue(stopPointSelected.name);
       this.productDetailsForm.controls['stopId'].setValue(stopPointSelected.id);
       this.productDetailsForm.controls['stopDescription'].setValue(stopPointSelected.description);
       this.productDetailsForm.controls['routeId'].setValue(stopPointSelected.routeId);
       this.productDetailsForm.controls['routeName'].setValue(stopPointSelected.routeName);
-      console.log(this.productDetailsForm.value);
+ 
     })
 
     return await modal.present();
   }
 
   submitForm() {
-    console.log(this.productDetailsForm.value);
+   
     const purchaseRequest = {...this.product, ...this.productDetailsForm.value, active: true};
-    console.log(purchaseRequest);
+
     localStorage.setItem('payNowReference', JSON.stringify(purchaseRequest));
     this.presentActionSheet(purchaseRequest);
   }

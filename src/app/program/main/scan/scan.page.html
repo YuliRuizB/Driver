@@ -1,18 +1,24 @@
-<ion-header>
+<ion-header *ngIf="!openScan">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Scannear pases</ion-title>
+    <ion-title>Escanear pases</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="scanQRCode()">
         <ion-icon size="large" name="qr-code-outline" color="light"></ion-icon>
       </ion-button>
     </ion-buttons>
+
+		<ion-buttons slot="end">
+      <ion-button (click)="openModal()">
+        <ion-icon size="large" name="camera" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="!openScan">
 
   <div *ngIf="loading">
     <ion-list>
@@ -137,7 +143,35 @@
     </ion-list>
   </div>
 
+	<!--
+	<div>
+		<ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+		<div id="close-scanner-button" text-center>
+			<ion-grid>
+				<ion-row>
+					<ion-col size="3">
+						<ion-button size="large" expand="block" (click)="toggleCamera()" color="light">
+							<ion-icon name="camera-reverse-outline"></ion-icon>
+					</ion-button>
+					</ion-col>
+					<ion-col size="6">
+						<ion-button size="large" expand="block" (click)="closeScanner(true)" color="primary">
+							Cerrar
+					</ion-button>
+					</ion-col>
+					<ion-col size="3">
+						<ion-button size="large" expand="block" (click)="toggleLight()" [color]="light ? 'primary' : 'light'">
+							<ion-icon name="bulb-outline"></ion-icon>
+					</ion-button>
+					</ion-col>
+				</ion-row>
+			</ion-grid>
+		</div>
+	</div>
+-->
 </ion-content>
+
+
 <ion-footer>
   <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
   <div id="close-scanner-button" text-center>
@@ -160,5 +194,16 @@
         </ion-col>
       </ion-row>
     </ion-grid>
+		
+		<div style="height: calc(100% - 85px); display: flex; align-items: center;">
+			<div  class="box">
+				<div class="box1"></div>
+				<div class="box2"></div>
+				<div class="box3"></div>
+				<div class="box4"></div>
+			</div>
+		</div>
+		
 </div>
 </ion-footer>
+

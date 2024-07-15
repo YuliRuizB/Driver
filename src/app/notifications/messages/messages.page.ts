@@ -51,7 +51,6 @@ export class MessagesPage implements OnInit, OnDestroy {
       })))
     .subscribe( notifications => {
       this.notifications = notifications;
-      console.log(notifications);
       this.loading = false;
     });
     
@@ -63,7 +62,7 @@ export class MessagesPage implements OnInit, OnDestroy {
       })))
     .subscribe( messages => {
       this.messages = messages;
-      console.log(messages);
+
       this.loading = false;
     });
 

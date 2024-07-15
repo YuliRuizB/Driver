@@ -28,7 +28,7 @@ export class UsageDetailsPage implements OnInit {
       this.user = JSON.parse(userData);
       this.sub = this.route.params.subscribe(params => {
         this.boardingPassId = params['id'];
-        console.log(this.boardingPassId);
+  
         this.getSubscriptions();
       });
     })
@@ -50,10 +50,12 @@ export class UsageDetailsPage implements OnInit {
         name = 'Localización';
         break;
       case 'round':
-        name = 'Turno incorrecto';
+        // name = 'Turno incorrecto';
+				name = 'TURNO INCORRECTO. Estas tratando de abordar en un turno no correspondiente';
         break;
       case 'route':
-        name = 'Ruta incorrecta';
+        // name = 'Ruta incorrecta';
+				name = 'RUTA INCORRECTA. Estas tratando de abordar una ruta que no te corresponde';
         break;
       case 'duplicate':
         name = 'Uso duplicado';
@@ -73,7 +75,6 @@ export class UsageDetailsPage implements OnInit {
   getSubscriptions() {
     this.purchasesService.getBoardingPassActivityLog(this.user.uid, this.boardingPassId).pipe(take(1)).subscribe( (log) => {
       this.activityLog = log;
-      console.log(log);
       this.loading = false;
     })
   }

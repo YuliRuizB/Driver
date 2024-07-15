@@ -36,7 +36,7 @@ export class PurchasePage implements OnInit {
   ngOnInit() {
     this.storageService.getItem('userData').then((userData) => {
       this.user = JSON.parse(userData);
-      console.log(this.user);
+    
       this.product = JSON.parse(localStorage.getItem('payNowReference'));
 
       // Set 15 day to make payment
@@ -77,7 +77,7 @@ export class PurchasePage implements OnInit {
         return { id, ...data };
       }))
     ).subscribe((chargeRequests: any) => {
-      console.log(chargeRequests);
+ 
       this.chargeRequests = _.filter(chargeRequests, function (o) {
         return o.status !== "completed";
       });
@@ -123,7 +123,7 @@ export class PurchasePage implements OnInit {
           handler: () => {
             this.presentLoadingWithOptions().then(() => {
               this.openpayService.newStoreChargeRequest(this.newStoreChargeRequest, this.product, this.user).then((response) => {
-                console.log(response);
+          
                 this.storeChargeReference = response;
                 this.loadingShow.dismiss();
                 this.loading = false;

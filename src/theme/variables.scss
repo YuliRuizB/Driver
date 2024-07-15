@@ -96,7 +96,8 @@ html.qr-scanner-open {
   ion-app,
   ion-action-sheet,
   ion-content {
-      height: 60vh !important;
+      // height: 60vh !important;
+			height: 100vh !important;
   }
 
   ion-content > *:not(#close-scanner-button) {
@@ -105,6 +106,7 @@ html.qr-scanner-open {
 
   #close-scanner-button {
       display: block;
+			height: 100vh !important;
   }
 }
 

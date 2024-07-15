@@ -53,21 +53,17 @@ export class SignupPage implements OnInit {
         return { id, ...data };
       }))
     ).subscribe( (customers) => {
-      console.log(customers);
       this.vendorsList = customers;
       this.loading = false;
     })
   }
 
   onChange(event) {
-    console.log(event.target.value);
     const selected = event.target.value;
     const vendorName = _.find(this.vendorsList, (o) => {
       return o.id == selected;
     });
     this.signupForm.controls['vendorName'].setValue(vendorName.name);
-    console.log(this.signupForm.value);
-    console.log(this.signupForm.valid);
   }
 
   async signUpWarning() {

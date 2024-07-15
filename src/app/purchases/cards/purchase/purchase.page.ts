@@ -47,7 +47,7 @@ export class PurchasePage implements OnInit {
     OpenPay.setApiKey('pk_7dccea88359847118d24d3fefa8f8595');
     OpenPay.setSandboxMode(true);
     this.deviceSessionId = OpenPay.deviceData.setup("payment-form", "deviceIdHiddenFieldName");
-    console.log(this.deviceSessionId);
+
     this.product = JSON.parse(localStorage.getItem('payNowReference'));
   }
 
@@ -60,18 +60,18 @@ export class PurchasePage implements OnInit {
 
     form.addEventListener('submit', event => {
       event.preventDefault();
-      console.log(event);
+ 
       // $("#pay-button").prop("disabled", true);
       this.presentLoadingWithOptions();
       OpenPay.token.extractFormAndCreate('payment-form', success_callbak, error_callbak);
     });
 
     var success_callbak = (response) => {
-      console.log(response);
+  
       this.token_id = response.data.id;
       var token_input = (<HTMLInputElement>document.getElementById('token_id'));
       token_input.setAttribute('value', this.token_id);
-      console.log(formToJSON(form.elements));
+    
       if (response.data.card.points_card) {
         // Si la tarjeta permite usar puntos, mostrar el cuadro de diálogo
         this.loading.dismiss().then(() => {
@@ -99,7 +99,7 @@ export class PurchasePage implements OnInit {
   }
 
   async presentToastWithOptions(response: any) {
-    console.log(response);
+  
     const toast = await this.toastController.create({
       header: 'Error',
       message: `${response.data.error_code}: ${this.errorCodes[response.data.error_code]}`,
@@ -110,7 +110,7 @@ export class PurchasePage implements OnInit {
           text: 'Ok',
           role: 'cancel',
           handler: () => {
-            console.log('Cancel clicked');
+       
           }
         }
       ]
@@ -181,7 +181,7 @@ export class PurchasePage implements OnInit {
           role: 'cancel',
           cssClass: 'secondary',
           handler: (blah) => {
-            console.log('user cancelled transaction');
+       
           }
         }]
     }
@@ -212,7 +212,7 @@ export class PurchasePage implements OnInit {
       this.newCardChargeRequest.use_card_points = true;
     }
     this.openpayService.newCardChargeRequest(this.newCardChargeRequest, this.product, this.userData).then((response: any) => {
-      console.log(response);
+  
       this.loading.dismiss().then(() => {
         this.presentAlertConfirmPayment(response);
       })

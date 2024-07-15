@@ -35,7 +35,6 @@ export class ContactUsPage implements OnInit {
         return { id, ...data };
       })
     ).subscribe( (contactUsInfo) => {
-      console.log(contactUsInfo);
       this.contactUsInfo = contactUsInfo;
       this.loading = false;
     })
@@ -45,7 +44,6 @@ export class ContactUsPage implements OnInit {
     this.loading = true;
     this.button = true;
     this.contactUsService.sendMessage(this.userData, this.message).then( (response) => {
-      console.log(response);
       this.loading = false;
       this.presentToast();
     });

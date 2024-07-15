@@ -32,93 +32,16 @@ export class SigninPage implements OnInit {
   }
 
   async ngOnInit() {
-		console.log('aqui???')
-		console.log('ngOnInit')
-		// this.bt();
-		/*this._AndroidPermissions.requestPermissions([this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION, this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION, this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION]).then((data:any) => {
-			console.log('request')
-			console.log(data)
-			/*this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION).then((result) => {
-				console.log('esto regresa');
-				console.log(result);
-				
-			}).catch((err) => {
-				console.log('en el catch');
-				console.log(err);
-			});-*/
-		/*}).catch((error)=>{
-			console.log(error);
-		})*/
-		/*const accessFineLocationPermission = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION);
-		console.log('esto veooooo');
-		console.log(accessFineLocationPermission)
-		const accessFineLocationPermission2 = await this._AndroidPermissions.requestPermissions([this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION, this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION])
-		console.log('heyy');
-		console.log(accessFineLocationPermission2)*/
-
-		/*this.current2PositionUserOnly().then(async (data)=>{
-			if(data==true){
-				this.call();
-			}
-
-		})*/
-
-		/*setTimeout(() => {
-			this.accesDataInfoModal(1);
-		},1500)*/
-		
 		this.validatePermission();
 	}
 
 	async validatePermission() {
 		const accessCoarseLocation = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION);
-		console.log('veo');
-		console.log(accessCoarseLocation)
 		this.accesDataInfoModal(1);
-		// this._OpenNativeSettings.open("application_details");
-		/*if (accessCoarseLocation.hasPermission === false) {
-			setTimeout(() => {
-				this.accesDataInfoModal(1);
-			},3000)
-		}else{
-			// const accessFineLocationPermission = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION);
-			console.log('fine');
-			const accessFineLocationPermission2 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION);
-			const accessFineLocationPermission3 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION);
-			console.log(accessFineLocationPermission2)
-			console.log(accessFineLocationPermission3)
-			this.accesDataInfoModal(2);
-			// console.log(accessFineLocationPermission)
-		}*/
 	}
 
 	async bt() {
 		const aux = await this._AndroidPermissions.requestPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION);
-		console.log('check')
-		console.log(aux)
-
-		/*this._AndroidPermissions.requestPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION).then((resp) => {
-			console.log('check')
-		console.log(resp)
-		}).catch((err) => {
-			console.log('err')
-			console.log(err)
-		})
-		
-		// const accessFineLocationPermission4 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_LOCATION_EXTRA_COMMANDS);
-			/*const accessFineLocationPermission = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION);
-			const accessFineLocationPermission2 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION);
-			const accessFineLocationPermission3 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION);
-			
-			console.log('esto veooooo');
-			// console.log(accessFineLocationPermission4);
-			console.log(accessFineLocationPermission)
-			console.log(accessFineLocationPermission2)
-
-			//este es el bueno
-			console.log(accessFineLocationPermission3)
-			// this._AndroidPermissions.requestPermission(this._AndroidPermissions.PERMISSION.ACCESS_BACKGROUND_LOCATION)
-			*/
 	}
 
   signin() {
@@ -129,8 +52,6 @@ export class SigninPage implements OnInit {
 
 	async callGps() {
 		const aux = await this._AndroidPermissions.requestPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION);
-		console.log('check')
-		console.log(aux)
 		const accessFineLocationPermission2 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION);
 			const accessFineLocationPermission3 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION);
 			console.log(accessFineLocationPermission2)
@@ -148,7 +69,6 @@ export class SigninPage implements OnInit {
 	}
 
 	async accesDataInfoModal(flag: number) {
-		console.log('entra');
     const modal = await this._ModalController.create({
       component: AccesDataInfoModalPage,
       componentProps: { value:  flag},
@@ -156,8 +76,6 @@ export class SigninPage implements OnInit {
 			backdropDismiss:false,
     });
 		modal.onDidDismiss().then(async (result)=>{
-			console.log('veooooo')
-			console.log(result)
 			if (result.data === 1) {
 				// info gps acces
 				this.callGps();

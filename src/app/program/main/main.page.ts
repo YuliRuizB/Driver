@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ProgramService, Updates } from '@shared/services/program.service';
 import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map,take } from 'rxjs/operators';
 import { AuthService } from '@shared/services/auth.service';
 import { ActionSheetController, IonItemSliding } from '@ionic/angular';
 import { Router } from '@angular/router';
@@ -38,21 +38,18 @@ export class MainPage implements OnInit, OnDestroy {
   ngOnInit() {
 		this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION).then((result) => {
       
-			console.log('esto regresa');
-			console.log(result);
 			/*this._AndroidPermissions.requestPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION).then((data:any) => {
-				console.log('request')
-				console.log(data)
+
 			}).catch((error)=>{
 				console.log(error);
 			})*/
     }).catch((err) => {
-      console.log('en el catch');
+
       console.log(err);
     });
     this.authService.user_profile.subscribe((data) => {
       this.user = data;
-      console.log(this.user);
+
       if (!!this.user) {
         this.getSubscriptions();
       }
@@ -60,8 +57,7 @@ export class MainPage implements OnInit, OnDestroy {
 
 
 		this.livepositionService.coordsObsr().subscribe((subs) => {
-			console.log('viendo la subcripcion');
-			console.log(subs)
+
 			if (subs === 1 ) {
 					
 			}else{
@@ -75,8 +71,7 @@ export class MainPage implements OnInit, OnDestroy {
 
 		/*this.interval =  setInterval(() => {
 			this.livepositionService.callGps2().then((resp) => {
-				console.log('esto regresa')
-				console.log(resp)
+
 			});
 		},5000);*/
   }
@@ -88,7 +83,9 @@ export class MainPage implements OnInit, OnDestroy {
   }
 
   getSubscriptions() {
+	
     this.programSubscription = this.programService.getTodayActivePrograms(this.user.uid).pipe(
+			// take(1),
       map(actions => actions.map(a => {
         const data = a.payload.doc.data() as any;
         const id = a.payload.doc.id;
@@ -96,7 +93,7 @@ export class MainPage implements OnInit, OnDestroy {
         return { id: id, path: docPath, ...data };
       })))
       .subscribe((program: any) => {
-        //console.log(program);
+
         this.organizeProgram(program);
       });
   }
@@ -106,7 +103,7 @@ export class MainPage implements OnInit, OnDestroy {
     this.featuredProgram = [];
     let orderedProgram = _.sortBy(unorderedProgram, [ function(p) {
       let startDate = p.startAt.toDate();
-      // console.log(startDate);
+
       
       return startDate;
     }])
@@ -117,12 +114,11 @@ export class MainPage implements OnInit, OnDestroy {
     this.finishedProgram = _.filter([...orderedProgram], (p) => {
       return !!p.hasEnded;
     });
-    // console.log(this.finishedProgram);
+ 
 
-		// console.log('superrrrrrrrrr mal')
-		// console.log(activeProgram);
     if(activeProgram.length > 0) {
       this.featuredProgram.push(activeProgram[0]);
+			// this.featuredProgram = activeProgram
       this.program = [];
       this.program = [...activeProgram];
       this.program.shift();
@@ -157,7 +153,7 @@ export class MainPage implements OnInit, OnDestroy {
         text: 'Terminar',
         icon: 'stop',
         handler: () => {
-          console.log('Share clicked');
+     
           if(slide) {
             slide.close();
           }
@@ -171,7 +167,7 @@ export class MainPage implements OnInit, OnDestroy {
           if(slide) {
             slide.close();
           }
-          console.log('Cancel clicked');
+      
         }
       }]
     } else if(!!selectedProgram.hasEnded) {
@@ -179,7 +175,7 @@ export class MainPage implements OnInit, OnDestroy {
         text: 'Ver información detallada',
         icon: 'search-outline',
         handler: () => {
-          console.log('Share clicked');
+  
           if(slide) {
             slide.close();
           }
@@ -193,7 +189,7 @@ export class MainPage implements OnInit, OnDestroy {
           if(slide) {
             slide.close();
           }
-          console.log('Cancel clicked');
+      
         }
       }]
     } else {
@@ -203,11 +199,11 @@ export class MainPage implements OnInit, OnDestroy {
         icon: 'thumbs-down-outline',
         role: 'destructive',
         handler: () => {
-          console.log('Delete clicked');
+     
          
           this.presentRejectedReasons(selectedProgram, slide); 
           this.optionSelected = "Rechazar programa";
-          console.log(this.optionSelected);
+   
         }
       });
 
@@ -216,7 +212,7 @@ export class MainPage implements OnInit, OnDestroy {
           text: 'Confirmarlo',
           icon: 'thumbs-up-outline',
           handler: () => {
-            console.log('Share clicked');
+
             if(slide) {
               slide.close();
             }
@@ -231,7 +227,7 @@ export class MainPage implements OnInit, OnDestroy {
           icon: 'warning-outline',
           role: 'destructive',
           handler: () => {
-            console.log('Play clicked');
+ 
             this.presentProblemReasons(selectedProgram, slide);
           }
         });
@@ -242,7 +238,7 @@ export class MainPage implements OnInit, OnDestroy {
           text: 'Problema resuelto',
           icon: 'checkmark-done-outline',
           handler: () => {
-            console.log('Play clicked');
+  
             if(slide) {
               slide.close();
             }
@@ -264,10 +260,12 @@ export class MainPage implements OnInit, OnDestroy {
               text: 'Iniciar la ruta',
               icon: 'play',
               handler: () => {
-                console.log('Favorite clicked');
+       
                 if(slide) {
                   slide.close();
                 }
+								
+
                 this.programService.updateProgram(Updates.setLive, selectedProgram.customerId, selectedProgram.id);
                 this.livepositionService.setLiveProgram(selectedProgram);
                 this.router.navigateByUrl(`main/navigation/${selectedProgram.id}/${selectedProgram.customerId}/${selectedProgram.routeId}/true`);
@@ -283,7 +281,7 @@ export class MainPage implements OnInit, OnDestroy {
           if(slide) {
             slide.close();
           }
-          console.log('Cancel clicked');
+
         }
       });
     }
@@ -301,7 +299,7 @@ export class MainPage implements OnInit, OnDestroy {
       buttons: [{
         text: 'Unidad descompuesta',
         handler: () => {
-          console.log('Delete clicked');
+ 
           if(slide) {
             slide.close();
           }
@@ -312,7 +310,7 @@ export class MainPage implements OnInit, OnDestroy {
       }, {
         text: 'Llanta(s) ponchada(s)',
         handler: () => {
-          console.log('Share clicked');
+ 
           if(slide) {
             slide.close();
           }
@@ -321,7 +319,7 @@ export class MainPage implements OnInit, OnDestroy {
       }, {
         text: 'Estoy enfermo',
         handler: () => {
-          console.log('Play clicked');
+   
           if(slide) {
             slide.close();
           }
@@ -330,7 +328,7 @@ export class MainPage implements OnInit, OnDestroy {
       }, {
         text: 'Imprevisto personal',
         handler: () => {
-          console.log('Favorite clicked');
+     
           if(slide) {
             slide.close();
           }
@@ -340,7 +338,7 @@ export class MainPage implements OnInit, OnDestroy {
         text: 'Cancelar',
         role: 'cancel',
         handler: () => {
-          console.log('Cancel clicked');
+       
           this.showActionSheetWithOptions(selectedProgram, slide);
         }
       }]
@@ -354,7 +352,7 @@ export class MainPage implements OnInit, OnDestroy {
       buttons: [{
         text: 'Unidad descompuesta',
         handler: () => {
-          console.log('Delete clicked');
+       
           if(slide) {
             slide.close();
           }
@@ -363,7 +361,7 @@ export class MainPage implements OnInit, OnDestroy {
       }, {
         text: 'Llanta(s) ponchada(s)',
         handler: () => {
-          console.log('Share clicked');
+      
           if(slide) {
             slide.close();
           }
@@ -372,7 +370,7 @@ export class MainPage implements OnInit, OnDestroy {
       }, {
         text: 'Envíen ayuda',
         handler: () => {
-          console.log('Share clicked');
+   
           if(slide) {
             slide.close();
           }
@@ -382,7 +380,7 @@ export class MainPage implements OnInit, OnDestroy {
         text: 'Cancelar',
         role: 'cancel',
         handler: () => {
-          console.log('Cancel clicked');
+   
           this.showActionSheetWithOptions(selectedProgram, slide);
         }
       }]

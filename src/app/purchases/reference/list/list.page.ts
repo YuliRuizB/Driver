@@ -32,7 +32,7 @@ export class ListPage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    console.log('onInit');
+ 
     this.storageService.getItem('userData').then((userData) => {
       this.user = JSON.parse(userData);
       this.product = JSON.parse(localStorage.getItem('payNowReference'));
@@ -57,7 +57,7 @@ export class ListPage implements OnInit, OnDestroy {
           confirm: false
         };
       }
-      console.log(this.newStoreChargeRequest);
+     
       this.getSubscriptions();
       // this.storeChargeRequest();
     })
@@ -67,7 +67,7 @@ export class ListPage implements OnInit, OnDestroy {
     if (!!this.product) {
       this.product.active = false;
       localStorage.setItem('payNowReference', JSON.stringify(this.product));
-      console.log('onDestroy');
+     
     }
   }
 
@@ -81,7 +81,7 @@ export class ListPage implements OnInit, OnDestroy {
       }))
     ).subscribe((products) => {
       this.purchaseRequests = products;
-      console.log(products);
+   
       this.loading = false;
     })
   }
@@ -125,7 +125,7 @@ export class ListPage implements OnInit, OnDestroy {
           handler: () => {
             this.presentLoadingWithOptions().then(() => {
               this.openpayService.newStoreChargeRequest(this.newStoreChargeRequest, this.product, this.user).then((response) => {
-                console.log(response);
+             
                 this.storeChargeReference = response;
                 this.loadingShow.dismiss();
                 this.loading = false;

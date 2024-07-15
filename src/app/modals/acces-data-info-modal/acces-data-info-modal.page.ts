@@ -14,7 +14,6 @@ export class AccesDataInfoModalPage implements OnInit {
 		private _AlertController: AlertController, private _OpenNativeSettings: OpenNativeSettings, private _NgZone:NgZone
 		) { 
 		this.flag = this._NavParams.get('value');
-		console.log(this.flag)
 	}
 
   ngOnInit() {
@@ -26,11 +25,8 @@ export class AccesDataInfoModalPage implements OnInit {
 
 	async permission() {
 		const accessCoarseLocation = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION);
-		console.log('veo22222222');
-		console.log(accessCoarseLocation)
 		if (accessCoarseLocation.hasPermission === false) {
 			const accessCoarseLocation2 = await this._AndroidPermissions.requestPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION);
-			console.log(accessCoarseLocation2);
 			if (accessCoarseLocation2.hasPermission === true) {
 				this._ModalController.dismiss(2);
 			}else{
