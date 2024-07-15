@@ -39,7 +39,7 @@ export class ProductsPage implements OnInit {
       }))
     ).subscribe((products) => {
       this.products = products;
-      console.log(products);
+
       this.loading = false;
     })
 
@@ -56,7 +56,7 @@ export class ProductsPage implements OnInit {
           text: method.name,
           icon: method.icon,
           handler: () => {
-            console.log(method.name);
+        
           }
         };
         this.paymentMethodsButtons.push(button);
@@ -96,7 +96,7 @@ export class ProductsPage implements OnInit {
           role: 'cancel',
           cssClass: 'secondary',
           handler: (blah) => {
-            console.log('Confirm Cancel: blah');
+     
           }
         }, {
           text: 'Aceptar',

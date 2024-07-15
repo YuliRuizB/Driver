@@ -57,6 +57,7 @@ export class ProgramService {
   }
 
   getTodayActivePrograms(userId: string) {
+
     const today = startOfDay(new Date());
     const tomorrow = startOfTomorrow();
     const activePrograms = this.afs.collectionGroup('program', ref => 
@@ -66,7 +67,7 @@ export class ProgramService {
       .orderBy('startAt','asc')
       // .where('hasEnded','==',false)
     );
-    return activePrograms.snapshotChanges();
+		return activePrograms.snapshotChanges();
   }
 
   getProgramAfterToday(userId: string) {
@@ -90,8 +91,7 @@ export class ProgramService {
   }
 
   updateProgram( updateCase: Updates, customerId: string, programId: string, additionalDescription?: string, troubleType?: string, additionalFields?: any) {
-    console.log("UdpateProgram");
-    console.log(updateCase);
+
     /* enum available cases: 'confirm', 'setLive', 'reject','end','problem','okNow','unitFull' */
     let update:any = {
       geopoint: new GeoPoint(this.currentLocation.coords.latitude, this.currentLocation.coords.longitude),

@@ -46,8 +46,6 @@ export class RemindersPage implements OnInit {
   }
 
   setReminder() {
-    console.log('set reminder');
-    console.log(this.reminderForm.value);
     const reminder = this.reminderForm.value;
     if(this.reminderForm.valid) {
       this.subscribeToTopic(reminder.stationId);
@@ -77,13 +75,13 @@ export class RemindersPage implements OnInit {
 
     modal.onWillDismiss().then(stopPoint => {
       const stopPointSelected = stopPoint.data.data;
-      console.log(stopPointSelected);
+
       this.reminderForm.controls['stationName'].setValue(stopPointSelected.name);
       this.reminderForm.controls['stationId'].setValue(stopPointSelected.id);
       this.reminderForm.controls['stationDescription'].setValue(stopPointSelected.description);
       this.reminderForm.controls['routeId'].setValue(stopPointSelected.routeId);
       this.reminderForm.controls['routeName'].setValue(stopPointSelected.routeName);
-      console.log(this.reminderForm.value);
+   
     })
 
     return await modal.present();

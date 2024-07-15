@@ -66,7 +66,7 @@ export class MainPage implements OnInit {
     ).subscribe((purchases: any) => {
       this.purchases = [];
       setTimeout(() => {
-        console.log(purchases);
+  
       this.purchases = purchases;
       this.loading = false;
       }, 50);
@@ -83,7 +83,7 @@ export class MainPage implements OnInit {
         return { id, ...data };
       }))
     ).subscribe((purchaseRequests: any) => {
-      console.log(purchaseRequests);
+   
       this.purchaseRequests = _.filter(purchaseRequests, (p) => {
         return new Date(p.due_date) >= new Date();
       })
@@ -93,7 +93,7 @@ export class MainPage implements OnInit {
   }
 
   showDetails(boardingPassCard) {
-    console.log('showDetails', boardingPassCard);
+
     this.boardingPassSelected = true;
     this.selectedBoardingPass = boardingPassCard;
     this.selectedBoardingPassValidFrom = new Date(this.selectedBoardingPass.validFrom.toDate());
@@ -101,7 +101,7 @@ export class MainPage implements OnInit {
     this.selectedBoardingPassValidTo = new Date(this.selectedBoardingPass.validTo.seconds * 1000);
     let date = new Date();
     this.isBoardingPassValid = this.showQRCode = new Date() >= this.selectedBoardingPassValidFrom && date.setDate(date.getDate() -1) <= this.selectedBoardingPassValidTo && boardingPassCard.active;
-    console.log(this.selectedBoardingPassValidFrom);
+
   }
 
 }

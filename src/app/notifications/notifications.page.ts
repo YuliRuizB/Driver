@@ -63,7 +63,6 @@ export class NotificationsPage implements OnInit {
   toggleActive(slidingItem: IonItemSliding, reminder) {
     reminder.active = !reminder.active;
     this.usersService.updateReminder(this.user.uid, reminder.id, reminder).then((response) => {
-      console.log(response);
       if(reminder.active) {
         this.subscribeToTopic(reminder.stationId)
       } else {
@@ -84,7 +83,7 @@ export class NotificationsPage implements OnInit {
   }
 
   unsubscribeFromTopic(topic: string) {
-    this.fcm.unsubscribeFromTopic(topic);
+    // this.fcm.unsubscribeFromTopic(topic);
   }
 
   async deleteReminder(slidingItem: IonItemSliding, reminder) {
@@ -104,7 +103,6 @@ export class NotificationsPage implements OnInit {
           text: 'Eliminar',
           handler: () => {
             this.usersService.deleteReminder(this.user.uid, reminder.id).then((response) => {
-              console.log(response);
               slidingItem.close();
             })
           }

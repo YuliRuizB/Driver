@@ -94,9 +94,11 @@ export class MapService {
   }
 
   addGEOLine(map: mapboxgl.Map, source: string, coordinates: Array<any>, flyToZero?: boolean) {
+		console.log('addGeo')
     console.log(flyToZero);
+		console.log(coordinates)
     var mapLayer = map.getLayer(source);
-    const shouldFlyToZero = flyToZero || false;
+    const shouldFlyToZero = true; // flyToZero || false;
 
     if(typeof mapLayer !== 'undefined') {
       // Remove map layer & source.
@@ -132,8 +134,9 @@ export class MapService {
 
     if(shouldFlyToZero) {
       console.log('should fly to zero', coordinates[0]);
+			console.log([this.lng, this.lat])
       map.flyTo({
-        center: coordinates[0],
+        center: [coordinates[0][0], coordinates[0][1]], // coordinates[0],
         essential: true
       });
     } else {
@@ -144,11 +147,13 @@ export class MapService {
         essential: true
       });
     }
+		
+		// map.polyline(encodeString, style).addTo(this.map);
     
   }
 
   addLayer(map: mapboxgl.Map, ) {
-
+		console.log('add layerrrrrrr')
     map.on('load', function () {
       // Insert the layer beneath any symbol layer.
       var layers = map.getStyle().layers as any;

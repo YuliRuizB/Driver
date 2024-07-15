@@ -4,7 +4,8 @@ import { Map, tileLayer } from "leaflet";
 import "leaflet-rotatedmarker";
 import "leaflet.marker.slideto";
 import { OnemapService } from "../services/data/onemap.service";
-import { Geolocation } from "@ionic-native/geolocation/ngx";
+// import { Geolocation } from "@ionic-native/geolocation/ngx";
+import { Geolocation } from '@awesome-cordova-plugins/geolocation/ngx';
 import {
   ToastController,
   ModalController,
@@ -26,7 +27,12 @@ import { StationInfoPage } from "./station-info/station-info.page";
 import { FCM } from "@ionic-native/fcm/ngx";
 import { OsrmService } from "../services/osrm/osrm.service";
 import esLocale from "date-fns/locale/es";
+import { LivepositionService } from '../../app/shared/services/liveposition.service';
+import { AccesDataInfoModalPage } from './../modals/acces-data-info-modal/acces-data-info-modal.page';
+import { AndroidPermissions }  from '@ionic-native/android-permissions/ngx';
+import { resolve } from "dns";
 
+declare  var google;
 @Component({
   selector: "app-home",
   templateUrl: "home.page.html",
@@ -59,6 +65,9 @@ export class HomePage implements OnInit {
   userGeoLocation: any;
   hasUserGeoLocation = false;
 
+
+	public directionsService:      any;
+  public polygon:                any= [];
   constructor(
     private apiService: OnemapService,
     private geolocation: Geolocation,
@@ -70,23 +79,47 @@ export class HomePage implements OnInit {
     private storageService: StorageService,
     private fcm: FCM,
     private osrmService: OsrmService,
-    private routerOutlet: IonRouterOutlet
-  ) { }
+    private routerOutlet: IonRouterOutlet,
+		private _LivepositionService: LivepositionService,
+		private _AndroidPermissions:AndroidPermissions
+  ) {
+		this.directionsService = new google.maps.DirectionsService();
+	 }
 
   ionViewDidEnter() {
-    console.log("ionviewdidenter");
     this.storageService.getItem("userData").then((userData) => {
       this.user = JSON.parse(userData);
       // this.canShowDevices();
       this.getSubscriptions();
       this.validateToken();
-
       if (this.user && this.user.defaultRoute) {
-        // this.showMapRoute();
+        //this.showMapRoute();
       } else {
         this.requestDefaultRoute();
       }
     });
+
+		this._LivepositionService.coordsObsr().subscribe(async (resp) => {
+			if (resp === 2) {
+				const accessFineLocationPermission3 = await this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_FINE_LOCATION);
+				if (accessFineLocationPermission3.hasPermission === false) {
+					this.accesDataInfoModal(3);
+				}
+			}
+		})
+  }
+
+	async accesDataInfoModal(flag: number) {
+    const modal = await this.modalController.create({
+      component: AccesDataInfoModalPage,
+      componentProps: { value:  flag},
+			showBackdrop:true,
+			backdropDismiss:false,
+    });
+		modal.onDidDismiss().then((result)=>{
+
+		});
+    await modal.present();
   }
 
   loadMapAfterSubscriptions() {
@@ -110,17 +143,15 @@ export class HomePage implements OnInit {
 
   validateToken() {
     this.fcm.getToken().then((token) => {
-      console.log("getToken() from homepage");
       this.usersService.registerToken(this.user.uid, token);
     });
     this.fcm.onTokenRefresh().subscribe((token) => {
-      console.log("onTokenRefresh() from homepage");
       this.usersService.registerToken(this.user.uid, token);
     });
     this.fcm.getAPNSToken().then((token) => {
-      console.log("getAPNSToken() from homepage");
       this.usersService.registerAPNSToken(this.user.uid, token);
     });
+		
   }
 
   async requestDefaultRoute() {
@@ -175,7 +206,7 @@ export class HomePage implements OnInit {
         {
           text: "Seleccionar",
           handler: (routeId) => {
-            console.log(routeId);
+  
             this.updateUserPreference({ defaultRoute: routeId }).then(() => {
               this.stationsMarkers.eachLayer((layer) => {
                 this.stationsMarkers.removeLayer(layer);
@@ -201,11 +232,11 @@ export class HomePage implements OnInit {
 
   updateUserGeolocation() {
     this.asyncProcess = true;
-    console.log("update user geolocation");
+
     this.geolocation
       .getCurrentPosition()
       .then((resp) => {
-        console.log(resp);
+  
         this.userGeoLocation = resp;
         this.hasUserGeoLocation = true;
         this.updateTimeTravel();
@@ -219,7 +250,7 @@ export class HomePage implements OnInit {
 
     const watch = this.geolocation.watchPosition();
     watch.subscribe((data: any) => {
-      console.log(data);
+
       // this.updateTimeTravel();
       // const pulsingIcon = L.Icon.pulse({
       //   iconSize: [20, 20],
@@ -278,6 +309,7 @@ export class HomePage implements OnInit {
         )
       )
       .subscribe((routes) => {
+	
         this.routes = routes;
         this.loadMapAfterSubscriptions();
         this.loading = false;
@@ -322,8 +354,9 @@ export class HomePage implements OnInit {
     }).addTo(this.map);
 
     this.map.whenReady(() => {
-      console.log("map is ready");
+
       if (this.user && this.user.defaultRoute) {
+	
         this.showMapRoute();
         this.startAutoUpdate();
       }
@@ -358,8 +391,9 @@ export class HomePage implements OnInit {
         )
       )
       .subscribe((routeStops) => {
-        console.log(routeStops);
+
         this.routeStopsList = routeStops;
+			
         this.addStopsToMap(this.routeStopsList);
         if (this.hasUserGeoLocation) {
           this.updateTimeTravel();
@@ -370,8 +404,10 @@ export class HomePage implements OnInit {
   updateTimeTravel() {
     this.routeStopsList.forEach((routeStop) => {
       this.getTimeTravelDistance(routeStop).then((response: any) => {
+			
         routeStop.distance =
-          Number(response.routes[0].distance / 1000).toFixed(0) + " km";
+          // Number(response.routes[0].distance / 1000).toFixed(0) + " km";
+					Number(response / 1000).toFixed(0) + " km";
         routeStop.duration = formatDistance(
           0,
           response.routes[0].duration * 1000,
@@ -384,17 +420,36 @@ export class HomePage implements OnInit {
   getTimeTravelDistance(station: any) {
     let userCoordinates = `${this.userGeoLocation.coords.longitude},${this.userGeoLocation.coords.latitude}`;
     let stationCoordinates = `${station.geopoint.longitude},${station.geopoint.latitude}`;
-    return this.osrmService
+		return new Promise((resolve) => {
+			this.directionsService.route({
+				origin: new google.maps.LatLng(this.userGeoLocation.coords.longitude, this.userGeoLocation.coords.latitude),
+				destination: new google.maps.LatLng(station.geopoint.longitude, station.geopoint.latitude),
+				travelMode: 'DRIVING',
+			},(response, status)=>{
+	
+	
+				/*this.apiDirecctionsArray.distance = response.routes[0].legs[0].distance.value;
+        this.apiDirecctionsArray.duration = response.routes[0].legs[0].duration.value;
+        this.apiDirecctionsArray.durationSegundos  = response.routes[0].legs[0].duration.value;
+        this.apiDirecctionsArray.distanceText = response.routes[0].legs[0].distance.text;
+        this.apiDirecctionsArray.durationText = response.routes[0].legs[0].duration.text;
+				*/
+	
+				resolve(response.routes[0].legs[0].distance.value)
+			})
+		})
+    /*return this.osrmService
       .getTimeTravelDistance("foot", stationCoordinates, userCoordinates)
       .pipe(take(1))
       .toPromise()
       .then((response) => {
         return response;
       });
+		*/
   }
 
-  addStopsToMap(stationsArray) {
-    console.log(stationsArray);
+  async addStopsToMap(stationsArray) {
+
     let arrayOfLatLngs = [];
     let coordinates = "";
     let radiuses = "";
@@ -436,13 +491,57 @@ export class HomePage implements OnInit {
         .addTo(this.stationsMarkers)
         .bindPopup(customPopup);
     });
-    console.log(arrayOfLatLngs);
-    let bounds =
-      arrayOfLatLngs.length > 0 ? new L.LatLngBounds(arrayOfLatLngs) : [];
+ 
+		let waypts = [];
+		let encodeString = [];
+		let dataReturn = [];
+		for (let x = 1; x < arrayOfLatLngs.length-1; x ++) {
+			waypts.push({
+				location: {
+					lat: arrayOfLatLngs[x][0],
+					lng: arrayOfLatLngs[x][1],
+				}
+			})
+		}
 
+		await this.directionsService.route({
+			origin: new google.maps.LatLng(arrayOfLatLngs[0][0], arrayOfLatLngs[0][1]),
+			waypoints: waypts,
+			destination: new google.maps.LatLng(arrayOfLatLngs[arrayOfLatLngs.length-1][0], arrayOfLatLngs[arrayOfLatLngs.length-1][1]),
+			travelMode: 'DRIVING',
+		},(response, status)=>{
+
+
+			let polylinePath = response.routes[0].overview_polyline;
+			let encodePath: string = polylinePath;
+			let encodeString2 = google.maps.geometry.encoding.decodePath(encodePath);
+			for(var x = 0; x < encodeString2.length; x++) {
+				// { markers: { lat: encodeString2[x].lat(), lng: encodeString2[x].lng() }}
+				encodeString.push(
+					[ encodeString2[x].lat(), encodeString2[x].lng()]
+				);
+			}
+
+		})
+
+		
+    let bounds = arrayOfLatLngs.length > 0 ? new L.LatLngBounds(arrayOfLatLngs) : [];
+		var style = {
+			color: "#3880ff",
+			weight: 8,
+			opacity: 0.6,
+		},
+			stroke = {
+				color: "#3171e0",
+				weight: 10,
+				opacity: 0.4,
+			};
+
+	
+			L.polyline(encodeString, style).addTo(this.map);
     // let polyline = (encode([[38.5, -120.2], [40.7, -120.95], [43.252, -126.453]]));
 
-    this.osrmService
+    /*this.osrmService
       .getMatchService(
         "driving",
         coordinates.substring(0, coordinates.length - 1),
@@ -472,7 +571,7 @@ export class HomePage implements OnInit {
             opacity: 0.4,
           };
         L.polyline(polylineArray, style).addTo(this.map);
-      });
+      });*/
 
     const boundsExists = arrayOfLatLngs.length > 0;
     if (boundsExists) {
@@ -497,19 +596,16 @@ export class HomePage implements OnInit {
         )
       )
       .subscribe((devices) => {
-        console.log(devices);
-
+      
         if (this.devices.length > 0) {
           const currentDevices = _.map(devices, (a) => {
             return a.id;
           });
-          console.log("this.device(s) is greather than 0");
-          console.log(this.devices);
-          console.log(currentDevices);
+
           const difference = _.difference(this.devices, currentDevices);
           if (difference.length > 0) {
             difference.forEach((device) => {
-              console.log("difference ", device);
+
               this.markers[device].remove();
             });
           }
@@ -623,8 +719,6 @@ export class HomePage implements OnInit {
                   }
                 );
                 // const time = '1231';
-                // console.log(position);
-
                 // create popup contents
                 const customPopup = `
               Unidad: <strong>${device.name}</strong><br/>

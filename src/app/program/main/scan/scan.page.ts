@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ToastController, LoadingController, ActionSheetController, AlertController } from '@ionic/angular';
+import { ModalController, ToastController, LoadingController, ActionSheetController, AlertController } from '@ionic/angular';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuditLogService } from '@shared/services/audit-log.service';
@@ -12,6 +12,7 @@ import { es } from 'date-fns/locale';
 import { ActivityLogService } from '@shared/services/activity-log.service';
 import * as _ from 'lodash';
 import { Vibration } from '@awesome-cordova-plugins/vibration/ngx';
+import { DriverEvidencePictureModalPage } from '../../../modals/driver-evidence-picture-modal/driver-evidence-picture-modal.page';
 
 @Component({
   selector: 'app-scan',
@@ -44,7 +45,7 @@ export class ScanPage implements OnInit, OnDestroy {
   scannedText: string;
 
   allowedOnBoard: number = 0;
-
+	openScan: boolean = false;
   constructor(public toastController: ToastController,
     public loadingController: LoadingController,
     public actionSheetController: ActionSheetController,
@@ -56,14 +57,18 @@ export class ScanPage implements OnInit, OnDestroy {
     private alertController: AlertController,
     private activityLogService: ActivityLogService,
     private router: Router,
-    private vibration: Vibration
+    private vibration: Vibration,
+		private _ModalController: ModalController
   ) {
     this.route.paramMap.subscribe(params => {
       this.programId = params.get('id');
       this.customerId = params.get('customerId');
       this.routeId = params.get('routeId');
       this.getSubscriptions();
+
+
       this.programService.pCurrentLocation.subscribe( (position) => {
+
         this.currentLocation = position;
       });
     });
@@ -78,12 +83,30 @@ export class ScanPage implements OnInit, OnDestroy {
     toast.present();
   }
 
+	async openModal() {
+		const send = { programId: this.programId, customerId: this.customerId, routeId: this.routeId }
+		const modal = await this._ModalController.create({
+      component: DriverEvidencePictureModalPage,
+      componentProps: { value: send },
+			showBackdrop:true,
+			backdropDismiss:false,
+    });
+		modal.onDidDismiss().then((result)=>{
+			if (result.data === 1) {
+				// this._NavController.navigateForward('check-request-pre-register');
+			} else {
+		
+			}
+		});
+    await modal.present();
+	}
+
   ngOnInit() {
-    this.scanQRCode();
+    // this.scanQRCode();
   }
 
   ngOnDestroy() {
-    console.log('ngOnDestroy');
+
     this.unsubscribeLoadingIndicator$.next(true);
     this.unsubscribeLoadingIndicator$.complete();
     this.closeScanner(true);
@@ -108,16 +131,16 @@ export class ScanPage implements OnInit, OnDestroy {
     .subscribe( (logs) => {
       this.auditLog = logs;
       this.allowedOnBoard = _.filter(logs, (l) => { return l.allowedOnBoard }).length;
-      console.log(this.allowedOnBoard);
+ 
       this.loading = false;
+
     });
 
     this.programSubscription = this.programService.getProgram(this.customerId, this.programId)
     .subscribe(program => {
       this.program = program.payload.data();
       this.program.id = program.payload.id;
-        console.log(this.program);
-        // this.validateQRCode('FyXKSXsUbYNtAbWL7zZ66o2f1M92,gBjsZWpfJ2NlvZQgh4AJ')
+
     });
   }
 
@@ -125,6 +148,7 @@ export class ScanPage implements OnInit, OnDestroy {
     
     const rootElement = <HTMLElement>document.getElementsByTagName('html')[0];
     rootElement.classList.add('qr-scanner-open');
+		this.openScan = true;
     this.qrScanner.prepare().then((status: QRScannerStatus) => {
       if (status.authorized) {
         this.qrScanner.show();
@@ -133,11 +157,12 @@ export class ScanPage implements OnInit, OnDestroy {
         let scanSub = this.qrScanner.scan().subscribe((text: string) => {
           this.vibration.vibrate(2000);
           this.scannedText = text;
+					scanSub.unsubscribe();
           this.validateQRCode(text);
-          scanSub.unsubscribe(); // stop scanning
+           // stop scanning
           // this.closeScanner(true);
           // this.scanning = false;
-          // console.log(text);
+
         });
       } else if (status.denied) {
         console.log('denied: ', status.denied)
@@ -174,6 +199,7 @@ export class ScanPage implements OnInit, OnDestroy {
     }
     this.qrScanner.hide();
     this.qrScanner.destroy();
+		this.openScan = false;
   }
 
   goEventDetails(programId: string) {
@@ -192,7 +218,7 @@ export class ScanPage implements OnInit, OnDestroy {
     toast.present();
 
     toast.onDidDismiss().then( () => {
-      this.scanQRCode();
+      // this.scanQRCode();
     })
 
     //this.presentActionSheet();
@@ -207,15 +233,29 @@ export class ScanPage implements OnInit, OnDestroy {
         text: 'Más información',
         icon: 'information-circle-outline',
         handler: () => {
-          console.log('Delete clicked');
+      
           this.presentAlertConfirm(el);
         }
-      }, {
+      }, 
+			{
+        // text: 'Permitir subir (Enterado)',
+				text: 'Reportar',
+        icon: 'log-in-outline',
+        handler: () => {
+  
+          el.validUsage = false;
+          el.updateData = true;
+          el.allowedOnBoard = true;
+          this.recordActivityLog(el)
+        }
+      },
+			
+			{
         text: 'Reintentar',
         icon: 'sync-outline',
         role: 'cancel',
         handler: () => {
-          console.log('Cancel clicked');
+      
         }
       }];
     } else {
@@ -223,25 +263,39 @@ export class ScanPage implements OnInit, OnDestroy {
         text: 'Más información',
         icon: 'information-circle-outline',
         handler: () => {
-          console.log('Delete clicked');
+  
           this.presentAlertConfirm(el);
         }
-      }, {
+      },
+			{
+        // text: 'Permitir subir (Enterado)',
+				text: 'Reportar',
+        icon: 'log-in-outline',
+        handler: () => {
+    
+          el.validUsage = false;
+          el.updateData = true;
+          el.allowedOnBoard = true;
+          this.recordActivityLog(el)
+        }
+      },
+			{
         text: 'Negar servicio',
         role: 'destructive',
         icon: 'log-out-outline',
         handler: () => {
-          console.log('Delete clicked');
+       
           el.validUsage = false;
           el.updateData = true;
           el.allowedOnBoard = false;
           this.recordActivityLog(el)
         }
       }, {
-        text: 'Permitir subir (Enterado)',
+        // text: 'Permitir subir (Enterado)',
+				text: 'Reportar',
         icon: 'log-in-outline',
         handler: () => {
-          console.log('Share clicked');
+      
           el.validUsage = false;
           el.updateData = true;
           el.allowedOnBoard = true;
@@ -252,7 +306,7 @@ export class ScanPage implements OnInit, OnDestroy {
         icon: 'sync-outline',
         role: 'cancel',
         handler: () => {
-          console.log('Cancel clicked');
+      
         }
       }];
     }
@@ -270,8 +324,9 @@ export class ScanPage implements OnInit, OnDestroy {
 
 
   async validateQRCode(code: string) {
+
     const isValidQRCode = await this.boardingPassesService.validate(code, this.program);
-    console.log(isValidQRCode);
+    
     if(isValidQRCode.success) {
       let color = 'success';
       let message = isValidQRCode.message;
@@ -281,7 +336,11 @@ export class ScanPage implements OnInit, OnDestroy {
         color = 'warning';
         duration = 4000;
       }
-      
+			setTimeout(() => {
+				this.scanQRCode();
+			},2000)
+			
+			// this.closeScanner(true);
       this.presentToast(message, color, duration, title);
       this.recordActivityLog(isValidQRCode)
     } else {
@@ -300,7 +359,7 @@ export class ScanPage implements OnInit, OnDestroy {
         {
           text: 'Enterado',
           handler: () => {
-            console.log('Confirm Okay');
+         
             this.presentActionSheet(el);
           }
         }

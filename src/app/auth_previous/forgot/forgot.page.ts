@@ -32,7 +32,7 @@ export class ForgotPage implements OnInit {
     if(this.resetPasswordForm.valid) {
       const data = this.resetPasswordForm.value;
       this.authService.sendPasswordResetEmail(data.email).then((response) => {
-        console.log(response);
+
         this.toastService.presentToast('Te hemos enviado a tu cuenta de correo electrónico las instrucciones para recuperar tu contraseña.', 3000, 'success').then( () => {
           setTimeout(() => {
             this.navController.navigateBack('auth/signin');

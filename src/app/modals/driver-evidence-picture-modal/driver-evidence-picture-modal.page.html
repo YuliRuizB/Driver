@@ -1,0 +1,133 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+
+		<ion-buttons slot="start">
+      <ion-button (click)="close()">
+        <ion-icon size="large" name="arrow-back" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Registro Evidencias</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<audio *ngIf="audioFlag == true" id="audio"  src="assets/voice1.mp3" autoplay="false" ></audio>
+<audio *ngIf="audioFlag2== true" id="audio2" src="assets/voice2.mp3" autoplay="false" ></audio>
+<ion-content>
+
+		<div style="padding: 15px;">
+			<div class="camera1" *ngIf="imageUrl === ''">
+				<div class="subcam">
+					<p><strong>Agregar una Fotografia</strong></p>
+					<ion-icon  name="camera" color="dark" style="font-size: 50px;"></ion-icon>
+						<ion-button expand="block" class="" size="small" (click)="pickImage()">Tomar Foto</ion-button>
+				</div>
+			</div>
+
+			<div *ngIf="imageUrl !== ''" style="display: flex; gap: 10px">
+				<div class="camera2">
+					<div class="subcam">
+						<p style="font-size: 14px;"><strong>Visualizar Foto</strong></p>
+						<ion-icon  name="image" color="dark" style="font-size: 50px;"></ion-icon>
+							<ion-button expand="block" class="" size="small" (click)="openImageModal()">Vizualizar</ion-button>
+					</div>
+				</div>
+
+				<div class="camera2">
+					<div class="subcam">
+						<p style="font-size: 14px;"><strong>Remover Foto</strong></p>
+						<ion-icon  name="trash" color="dark" style="font-size: 50px;"></ion-icon>
+							<ion-button color="danger" expand="block" class="" size="small" (click)="deleteImage()">Borrar</ion-button>
+					</div>
+				</div>
+			</div>
+			<br>
+			<div class="camera1" *ngIf="audioBase64 === ''">
+				<div class="subcam">
+					<p><strong>Agregar una audio</strong></p>
+
+					<ion-buttons *ngIf="colorCondition==false" style="animation-name: heartFadeInOut !important; animation-iteration-count: infinite !important; animation-duration: 3s !important;">
+						<ion-button style="height: 50px;">
+							<ion-icon  name="mic" color="danger" style="font-size: 50px;"></ion-icon>
+						</ion-button>
+					</ion-buttons>
+
+						<ion-icon *ngIf="colorCondition==true" name="mic" color="dark" style="font-size: 50px;"></ion-icon>
+			 		
+						<ion-button *ngIf="colorCondition==true" expand="block" class="" size="small" (click)="audio(true)">Iniciar Audio</ion-button>
+						<ion-button *ngIf="colorCondition==false" expand="block" class="" size="small" (click)="audio(false)">Detener Audio</ion-button>
+				</div>
+			</div>
+
+			
+			<div *ngIf="audioBase64 !== ''">
+				<br>
+				<div class="camera1" >
+					<div class="subcam">
+						<p style="font-size: 14px;"><strong>Remover Audio</strong></p>
+						<ion-icon  name="trash" color="dark" style="font-size: 50px;"></ion-icon>
+							<ion-button color="danger" expand="block" class="" size="small" (click)="deleteAudio()">Borrar</ion-button>
+					</div>
+				</div>
+				<br>
+				<div class="camera3">
+					<div class="subcam">
+						<p style="font-size: 14px;"><strong>Reproducir Audio</strong></p>
+						<audio style="width: 80% !important;" controls   controlsList="nodownload">
+							<source src="{{audioBase64}}">
+						</audio>
+					</div>
+				</div>
+			</div>
+			
+			<br>
+			
+
+			<div class="text1">
+				<ion-item style="border-radius: 20px;">
+					<ion-label position="floating">Escriba su comentario</ion-label>
+					<ion-textarea [(ngModel)]="comentario" rows="7" cols="5"></ion-textarea>
+				</ion-item>
+				<br>
+			</div>
+			<br>
+			<ion-button expand="block" class="" size="large" (click)="save()">Subir</ion-button>
+			
+		</div>
+
+
+
+	<!--
+			<div>
+
+		<ion-buttons   class="msg-btn" *ngIf="audioFlag == false">
+			<ion-button expand="block" fill="clear" color="primary" style="font-size: 20px; margin-top: 15px;  margin-left: -5px;" (click)="audio(true)">
+				<ion-icon *ngIf="colorCondition==true" name="mic" color="primary"></ion-icon>
+			 	<ion-icon *ngIf="colorCondition==false" name="mic" color="danger"></ion-icon>
+		 </ion-button>
+	 </ion-buttons>
+
+	 <div  *ngIf="audioFlag == true" [ngClass]="{buttonVoice1: colorCondition === false, buttonVoice2: colorCondition === true}"> 
+		<ion-buttons   class="msg-btn">
+			<ion-button expand="block" fill="clear" color="primary" style="font-size: 20px;margin-top: 4px;margin-left: -1pm;margin-left: 1px;animation-name: heartFadeInOut !important;animation-iteration-count: infinite !important;animation-duration: 3s !important;color: #10dc60;" (click)="audio(false)" >
+				 <ion-icon *ngIf="colorCondition==true" name="mic" color="primary"></ion-icon>
+				 <ion-icon *ngIf="colorCondition==false" name="mic" color="danger"></ion-icon>
+			 </ion-button>
+		 </ion-buttons>
+		</div>
+
+		</div>
+
+
+		<div *ngIf="audioBase64 !== null">
+			<audio style="width: 100% !important;" controls   controlsList="nodownload">
+				<source src="{{audioBase64}}">
+			</audio>
+		</div>
+	-->
+	
+
+</ion-content>

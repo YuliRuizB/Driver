@@ -23,7 +23,7 @@ export class SigninPage implements OnInit {
     public navController: NavController,
     private toastService: ToastService,
     private usersService: UsersService,
-    private storageService: StorageService
+    private storageService: StorageService,
   ) {
     this.loginForm = fb.group({
 			email: ['', Validators.compose([Validators.required, Validators.email])],
@@ -32,12 +32,12 @@ export class SigninPage implements OnInit {
    }
 
   ngOnInit() {
+		
   }
 
   signin() {
     if(this.loginForm.valid) {
       this.authService.signin(this.loginForm.value).then((response:any) => {
-        console.log(response);
         if (response.user) {
           const user = response.user;
           if (!user.emailVerified) {
@@ -53,18 +53,17 @@ export class SigninPage implements OnInit {
               const roles: any[] = user.roles;
               const isUser = roles.includes('user');
               const disabled = user.disabled || false;
-              console.log(user.roles.includes('user'));
               if(isUser && !disabled) {
                 this.storageService.setItem('userData', JSON.stringify(user));
                 this.storageService.getItem('isLoggedIn').then(isLoggedIn => {
-                  console.log(isLoggedIn);
+      
                   if(!isLoggedIn) {
                     this.storageService.setItem('isLoggedIn', true);
                   } 
                   this.navController.navigateRoot('home');
                 })
               } else {
-                console.log('is not a user');
+
                 this.toastService.presentToast('Esta aplicación es exclusiva para usuarios activos de la comunidad Bus2U. Para conductores, padres de familia y colaboradores hay otras aplicaciones.',5000,'danger').then( () => {
                   this.authService.signout().then( () => {
                     this.navController.navigateRoot('');

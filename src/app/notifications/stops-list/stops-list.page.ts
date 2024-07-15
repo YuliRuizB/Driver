@@ -42,9 +42,9 @@ export class StopsListPage implements OnInit {
   }
 
   ionSlideDidChange(event) {
-    console.log(event);
+
     this.slides.getActiveIndex().then( (index) => {
-      console.log(index);
+
       this.getStopPointsFromSelectedRoute(this.routes[index]);
     })
   }
@@ -79,7 +79,7 @@ export class StopsListPage implements OnInit {
       }))
     )
     .subscribe( (stops) => {
-      console.log(stops);
+  
       this.routeStops = _.orderBy(stops, ['order'],['asc']);
       this.loading = false;
     })

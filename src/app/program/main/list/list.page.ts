@@ -34,7 +34,7 @@ export class ListPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.authService.user_profile.subscribe((data) => {
       this.user = data;
-      console.log(this.user);
+
       if (!!this.user) {
         this.getSubscriptions();
       }
@@ -51,14 +51,14 @@ export class ListPage implements OnInit, OnDestroy {
   getSubscriptions() {
     this.programSubscription = this.programService.getProgramAfterToday(this.user.uid).pipe(
       map(actions => actions.map(a => {
-        console.log(a);
+ 
         const data = a.payload.doc.data() as any;
         const id = a.payload.doc.id;
         const docPath = a.payload.doc.ref.parent.path;
         return { id: id, path: docPath, ...data };
       })))
       .subscribe((program: any) => {
-        console.log(program);
+   
         this.program = this.groupByDate(program, 'startAt');
         this.programActivities = program.length;
         this.loading = false;
@@ -94,7 +94,6 @@ export class ListPage implements OnInit, OnDestroy {
       }
     }
 
-    console.log(this.events);
     return this.events;
   }
 

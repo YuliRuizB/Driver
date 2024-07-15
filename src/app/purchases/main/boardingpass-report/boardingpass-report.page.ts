@@ -39,7 +39,7 @@ export class BoardingpassReportPage implements OnInit {
         return { id, ...data };
       })
     ).subscribe( (contactUsInfo) => {
-      console.log(contactUsInfo);
+
       this.contactUsInfo = contactUsInfo;
       this.loading = false;
     })
@@ -50,7 +50,7 @@ export class BoardingpassReportPage implements OnInit {
     this.button = false;
     const message = `${initialMessage} ${this.message}`;
     this.contactUsService.sendMessage(this.userData, message).then( (response) => {
-      console.log(response);
+ 
       this.loading = false;
       this.presentToast();
     });

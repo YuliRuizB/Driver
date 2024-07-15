@@ -72,8 +72,7 @@ export class ProfilePage implements OnInit {
       if (user) {     
         this.user = user; 
         this.getSubscriptions(this.user.uid);
-      //  console.log("his.use1");
-       // console.log(this.user);
+
         this.userBucketPath = `students/pictureIds/${this.user.uid}.jpeg`;
       }
     });
@@ -82,11 +81,10 @@ export class ProfilePage implements OnInit {
   ngOnInit() {
     this.storageService.getItem('userData').then((userData) => {
       this.userData = JSON.parse(userData);        
-      console.log(this.userData);
+
     });
     if (this.user) {
-      console.log("this.user");
-      console.log(this.user);
+
     }
   }
 
@@ -137,7 +135,7 @@ export class ProfilePage implements OnInit {
       user.updateProfile({
         [profileElement]: event.target.value
       }).then(() => {
-        console.log('update successful');
+    
         // this.updateData(profileElement, event);
       }).catch((error) => {
         console.log('update error: ', error);
@@ -197,7 +195,7 @@ export class ProfilePage implements OnInit {
     console.log("started updatePhotoURL with url: ", url);
     await user.updateProfile({ photoURL: url }).then((response) => {
       this.loading = false;
-      return console.log(response);
+      return 
 
     }, err => { 
       this.loading = false;

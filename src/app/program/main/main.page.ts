@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ProgramService, Updates } from '@shared/services/program.service';
 import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map,take } from 'rxjs/operators';
 import { AuthService } from '@shared/services/auth.service';
 import { ActionSheetController, IonItemSliding } from '@ionic/angular';
 import { Router } from '@angular/router';
@@ -9,7 +9,8 @@ import * as _ from 'lodash';
 import { LivepositionService } from '@shared/services/liveposition.service';
 import { Storage } from '@ionic/storage-angular';
 import { differenceInMinutes } from 'date-fns';
-
+// import { AndroidPermissions }  from '@awesome-cordova-plugins/android-permissions/ngx';
+import { AndroidPermissions }  from '@ionic-native/android-permissions/ngx';
 @Component({
   selector: 'app-main',
   templateUrl: './main.page.html',
@@ -25,24 +26,54 @@ export class MainPage implements OnInit, OnDestroy {
   optionSelected: string = "1";
   programSubscription: Subscription;
   isLiveProgram;
+	interval: any;
   @ViewChild('slide', { static: true }) slide: IonItemSliding;
 
-  constructor(private programService: ProgramService, private storage: Storage, private livepositionService: LivepositionService, private router: Router, public actionSheetController: ActionSheetController, private authService: AuthService) {
+  constructor(private programService: ProgramService, private storage: Storage, private livepositionService: LivepositionService, private router: Router, public actionSheetController: ActionSheetController, private authService: AuthService,
+		private _AndroidPermissions: AndroidPermissions
+		) {
 
   }
 
   ngOnInit() {
+		this._AndroidPermissions.checkPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION).then((result) => {
+      
+			/*this._AndroidPermissions.requestPermission(this._AndroidPermissions.PERMISSION.ACCESS_COARSE_LOCATION).then((data:any) => {
+
+			}).catch((error)=>{
+				console.log(error);
+			})*/
+    }).catch((err) => {
+
+      console.log(err);
+    });
     this.authService.user_profile.subscribe((data) => {
       this.user = data;
-      console.log(this.user);
+
       if (!!this.user) {
         this.getSubscriptions();
       }
     });
 
+
+		this.livepositionService.coordsObsr().subscribe((subs) => {
+
+			if (subs === 1 ) {
+					
+			}else{
+				clearInterval(this.interval)
+			}
+		});
     this.livepositionService.isLiveProgram.subscribe( (isLiveProgram: boolean) => {
       this.isLiveProgram = isLiveProgram;
     })
+
+
+		/*this.interval =  setInterval(() => {
+			this.livepositionService.callGps2().then((resp) => {
+
+			});
+		},5000);*/
   }
 
   ngOnDestroy() {
@@ -52,7 +83,9 @@ export class MainPage implements OnInit, OnDestroy {
   }
 
   getSubscriptions() {
+	
     this.programSubscription = this.programService.getTodayActivePrograms(this.user.uid).pipe(
+			// take(1),
       map(actions => actions.map(a => {
         const data = a.payload.doc.data() as any;
         const id = a.payload.doc.id;
@@ -60,7 +93,7 @@ export class MainPage implements OnInit, OnDestroy {
         return { id: id, path: docPath, ...data };
       })))
       .subscribe((program: any) => {
-        console.log(program);
+
         this.organizeProgram(program);
       });
   }
@@ -70,7 +103,7 @@ export class MainPage implements OnInit, OnDestroy {
     this.featuredProgram = [];
     let orderedProgram = _.sortBy(unorderedProgram, [ function(p) {
       let startDate = p.startAt.toDate();
-      console.log(startDate);
+
       
       return startDate;
     }])
@@ -81,9 +114,11 @@ export class MainPage implements OnInit, OnDestroy {
     this.finishedProgram = _.filter([...orderedProgram], (p) => {
       return !!p.hasEnded;
     });
-    // console.log(this.finishedProgram);
+ 
+
     if(activeProgram.length > 0) {
       this.featuredProgram.push(activeProgram[0]);
+			// this.featuredProgram = activeProgram
       this.program = [];
       this.program = [...activeProgram];
       this.program.shift();
@@ -118,7 +153,7 @@ export class MainPage implements OnInit, OnDestroy {
         text: 'Terminar',
         icon: 'stop',
         handler: () => {
-          console.log('Share clicked');
+     
           if(slide) {
             slide.close();
           }
@@ -132,7 +167,7 @@ export class MainPage implements OnInit, OnDestroy {
           if(slide) {
             slide.close();
           }
-          console.log('Cancel clicked');
+      
         }
       }]
     } else if(!!selectedProgram.hasEnded) {
@@ -140,7 +175,7 @@ export class MainPage implements OnInit, OnDestroy {
         text: 'Ver información detallada',
         icon: 'search-outline',
         handler: () => {
-          console.log('Share clicked');
+  
           if(slide) {
             slide.close();
           }
@@ -154,7 +189,7 @@ export class MainPage implements OnInit, OnDestroy {
           if(slide) {
             slide.close();
           }
-          console.log('Cancel clicked');
+      
         }
       }]
     } else {
@@ -164,11 +199,11 @@ export class MainPage implements OnInit, OnDestroy {
         icon: 'thumbs-down-outline',
         role: 'destructive',
         handler: () => {
-          console.log('Delete clicked');
+     
          
           this.presentRejectedReasons(selectedProgram, slide); 
           this.optionSelected = "Rechazar programa";
-          console.log(this.optionSelected);
+   
         }
       });
 
@@ -177,7 +212,7 @@ export class MainPage implements OnInit, OnDestroy {
           text: 'Confirmarlo',
           icon: 'thumbs-up-outline',
           handler: () => {
-            console.log('Share clicked');
+
             if(slide) {
               slide.close();
             }
@@ -192,7 +227,7 @@ export class MainPage implements OnInit, OnDestroy {
           icon: 'warning-outline',
           role: 'destructive',
           handler: () => {
-            console.log('Play clicked');
+ 
             this.presentProblemReasons(selectedProgram, slide);
           }
         });
@@ -203,7 +238,7 @@ export class MainPage implements OnInit, OnDestroy {
           text: 'Problema resuelto',
           icon: 'checkmark-done-outline',
           handler: () => {
-            console.log('Play clicked');
+  
             if(slide) {
               slide.close();
             }
@@ -217,7 +252,7 @@ export class MainPage implements OnInit, OnDestroy {
         const selectedProgramStartsAt = selectedProgram.startAt.toDate();
         const actualDate = new Date();
         const timeDiff = Math.abs(differenceInMinutes(actualDate, selectedProgramStartsAt));
-        console.log(timeDiff);
+        // console.log(timeDiff);
         
          // if(!this.isLiveProgram && timeDiff <= 60) {
 
@@ -225,10 +260,12 @@ export class MainPage implements OnInit, OnDestroy {
               text: 'Iniciar la ruta',
               icon: 'play',
               handler: () => {
-                console.log('Favorite clicked');
+       
                 if(slide) {
                   slide.close();
                 }
+								
+
                 this.programService.updateProgram(Updates.setLive, selectedProgram.customerId, selectedProgram.id);
                 this.livepositionService.setLiveProgram(selectedProgram);
                 this.router.navigateByUrl(`main/navigation/${selectedProgram.id}/${selectedProgram.customerId}/${selectedProgram.routeId}/true`);
@@ -244,7 +281,7 @@ export class MainPage implements OnInit, OnDestroy {
           if(slide) {
             slide.close();
           }
-          console.log('Cancel clicked');
+
         }
       });
     }
@@ -262,7 +299,7 @@ export class MainPage implements OnInit, OnDestroy {
       buttons: [{
         text: 'Unidad descompuesta',
         handler: () => {
-          console.log('Delete clicked');
+ 
           if(slide) {
             slide.close();
           }
@@ -273,7 +310,7 @@ export class MainPage implements OnInit, OnDestroy {
       }, {
         text: 'Llanta(s) ponchada(s)',
         handler: () => {
-          console.log('Share clicked');
+ 
           if(slide) {
             slide.close();
           }
@@ -282,7 +319,7 @@ export class MainPage implements OnInit, OnDestroy {
       }, {
         text: 'Estoy enfermo',
         handler: () => {
-          console.log('Play clicked');
+   
           if(slide) {
             slide.close();
           }
@@ -291,7 +328,7 @@ export class MainPage implements OnInit, OnDestroy {
       }, {
         text: 'Imprevisto personal',
         handler: () => {
-          console.log('Favorite clicked');
+     
           if(slide) {
             slide.close();
           }
@@ -301,7 +338,7 @@ export class MainPage implements OnInit, OnDestroy {
         text: 'Cancelar',
         role: 'cancel',
         handler: () => {
-          console.log('Cancel clicked');
+       
           this.showActionSheetWithOptions(selectedProgram, slide);
         }
       }]
@@ -315,7 +352,7 @@ export class MainPage implements OnInit, OnDestroy {
       buttons: [{
         text: 'Unidad descompuesta',
         handler: () => {
-          console.log('Delete clicked');
+       
           if(slide) {
             slide.close();
           }
@@ -324,7 +361,7 @@ export class MainPage implements OnInit, OnDestroy {
       }, {
         text: 'Llanta(s) ponchada(s)',
         handler: () => {
-          console.log('Share clicked');
+      
           if(slide) {
             slide.close();
           }
@@ -333,7 +370,7 @@ export class MainPage implements OnInit, OnDestroy {
       }, {
         text: 'Envíen ayuda',
         handler: () => {
-          console.log('Share clicked');
+   
           if(slide) {
             slide.close();
           }
@@ -343,7 +380,7 @@ export class MainPage implements OnInit, OnDestroy {
         text: 'Cancelar',
         role: 'cancel',
         handler: () => {
-          console.log('Cancel clicked');
+   
           this.showActionSheetWithOptions(selectedProgram, slide);
         }
       }]

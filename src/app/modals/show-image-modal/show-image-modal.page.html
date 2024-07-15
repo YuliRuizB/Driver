@@ -1,0 +1,18 @@
+<div  style="z-index: 9999;height: 100%; width:  100%;">
+  <div  style="height: 10%; width:  100%; background-color: black;">
+    <ion-buttons slot="end" (click)="closePhoto()" style="padding-top: 25px;margin-left: 85%;">
+      <ion-button color="light" style="font-size: 30px;">
+        <ion-icon name="close-circle"></ion-icon>
+        </ion-button>
+  </ion-buttons>
+  </div>
+  <ion-slides zoom [options]="sliderOpts">
+    <ion-slide>
+      <div class="swiper-zoom-container">
+        <img src="{{imageBase64}}"    style="height: auto; width: 100%;" >
+      </div>
+    </ion-slide>
+  </ion-slides>
+  
+  <div  style="height: 100%; width:  100%; background-color: black;"></div>
+</div>

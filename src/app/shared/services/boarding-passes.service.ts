@@ -4,7 +4,10 @@ import * as firebase from 'firebase/compat/app';
 import { Timestamp } from 'firebase/firestore';
 import { formatDistanceToNow, format, endOfMonth, endOfDay, startOfDay, startOfMonth, addBusinessDays, isBefore } from 'date-fns';
 import { es } from 'date-fns/locale';
-
+// import * as moment from 'moment';
+// import * as tz from "moment-timezone";
+// import 'moment-timezone';
+import * as moment from 'moment-timezone'
 @Injectable({
   providedIn: 'root'
 })
@@ -19,20 +22,20 @@ export class BoardingPassesService {
     config.get().then((querySnapshot) => {
       if (querySnapshot.exists) {
         this.globalConfig = querySnapshot.data();
-        console.log(this.globalConfig);
+      
       }
     })
   }
 
   async validate(qrCodeData: string, program: any) {
-    console.log('program: ', program);
-    let code = (qrCodeData).split(',');
-    console.log('code read is: ', qrCodeData);
-    if(code.length === 1) {
+    
+    let code = (qrCodeData).split('-');
+    
+    /*if(code.length === 1) {
       code = (qrCodeData).split(':');
       console.log('code length is: ', JSON.stringify(code), code.length);
-    }
-    console.log('code length is: ', JSON.stringify(code), code.length);
+    }*/
+   
     const userId = code[0];
     const boardingPassId = code[1];
     let isCredential = false;
@@ -49,7 +52,7 @@ export class BoardingPassesService {
 
           if (code.length === 3) { isCredential = code[2] === 'C'; }
           if (isCredential) {
-            console.log('isCredential', isCredential);
+			
             const credential: any = await this.validateCredential(userId, boardingPassId, program);
             credential.isCredential = true;
             credential.credentialId = boardingPassId;
@@ -57,13 +60,14 @@ export class BoardingPassesService {
             credential.programId = program.id;
             return credential;
           } else {
-            console.log('if not, the isBoardingPass');
+          
             const boardingPass: any = await this.validateBoardingPass(userId, boardingPassId, program);
-            console.log('returned message from method: ', boardingPass);
+           
             boardingPass.isCredential = false;
             boardingPass.credentialId = null;
             boardingPass.code = qrCodeData;
             boardingPass.programId = program.id;
+						// boardingPass[]
             return boardingPass;
           }
 
@@ -112,13 +116,13 @@ export class BoardingPassesService {
 
     let message = {};
     const isValid: any = await this.isValidCredential(userId, credentialId, program);
-    console.log(isValid);
+  
 
     const today = startOfDay(new Date());
     const maxAllowanceDate = addBusinessDays(startOfMonth(endOfDay(today)), this.globalConfig.maxAllowanceDays || 3);
     const isWithinAllowance = isBefore(today, maxAllowanceDate);
     const actualKey = `${credentialId}${program.type}${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDate()}`;
-    console.log('is within allowance date: ', isWithinAllowance);
+   
 
     if (!isValid.success) {
 
@@ -152,7 +156,7 @@ export class BoardingPassesService {
 
 
     const endOfThisMonth = endOfMonth(endOfDay(today));
-    console.log(endOfThisMonth);
+   
     const boardingPass = firebase.default.firestore().collection('users').doc(userId).collection('boardingPasses')
       .where('validTo', '>', today).where('validTo', '<', endOfThisMonth).limit(1); //.where('active','==', true)
     return await boardingPass.get().then(querySnapshot => {
@@ -201,7 +205,7 @@ export class BoardingPassesService {
       }
 
       const docs = querySnapshot.docs;
-      console.log(docs);
+      
       const doc = docs[0];
       const boardingPassId = doc.id;
       const isValidBoardingPass = this.validateBoardingPass(userId, boardingPassId, program);
@@ -217,7 +221,7 @@ export class BoardingPassesService {
 
       if (querySnapshot.exists) {
         const data: any = querySnapshot.data();
-        console.log(data);
+       
         const today = startOfDay(new Date());
         const validFrom = startOfDay(data.validFrom.toDate());
         const validTo = endOfDay(data.validTo.toDate());
@@ -279,7 +283,7 @@ export class BoardingPassesService {
           return message;
         }
 
-        console.log(actualKey);
+   
         let lastUserKey = '';
         if (data && data.passValidation && data.passValidation.validation) {
           lastUserKey = data.passValidation.validation;
@@ -317,7 +321,7 @@ export class BoardingPassesService {
             timestamp: Timestamp.fromDate((data.passValidation.lastUsed).toDate()),
             message: `Tu pase ya ha sido usado el día de hoy de ${programType} hace ${timeDistance} (${timeFormat}) en la unidad ${data.passValidation.lastUsedVehicle}`
           };
-
+	
           return message;
 
         }
@@ -352,12 +356,15 @@ export class BoardingPassesService {
 
   async validateBoardingPass(userId: string, boardingPassId: string, program: any) {
 
+
     const boardingPass = firebase.default.firestore().collection('users').doc(userId).collection('boardingPasses').doc(boardingPassId);
     return await boardingPass.get().then(querySnapshot => {
 
       const boardingPass = querySnapshot.data();
       const boardingPassId = querySnapshot.id;
-      console.log('this is the data for the boardingPass acquired: ', boardingPass);
+		
+			// console.log(boardingPass.idBoardingPass)
+     
       let message = {};
 
       if (querySnapshot.exists) {
@@ -367,25 +374,38 @@ export class BoardingPassesService {
         let date = new Date();
         let today = new Date(date.setDate(date.getDate() - 1));
         const isBoardingPassValid = new Date() >= boardingPassValidFrom && today <= boardingPassValidTo && boardingPass.active;
-        console.log('isBoardingPassValid, ', isBoardingPassValid);
-        if (isBoardingPassValid) {
 
+        if (isBoardingPassValid) {
+	
           const actualKey = `${boardingPassId}${program.type}${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDate()}`;
-          console.log(actualKey);
+    
           let lastUserKey = '';
           if (boardingPass && boardingPass.passValidation && boardingPass.passValidation.validation) {
-            lastUserKey = boardingPass.passValidation.validation;
+			
+            
+						// moment().t
+						let date1  = moment(boardingPass.passValidation.callDateFunction).tz("America/Monterrey").format() 
+						let date2 = moment().tz("America/Monterrey").format() 
+						let date3 = moment(date2).diff(moment(date1), 'hours');
+						if (date3 <= 2) {
+							lastUserKey = boardingPass.passValidation.validation;
+						}else{
+							lastUserKey = '';
+						}
+						//moment.tz(boardingPass.passValidation.callDateFunction, "America/Monterrey").format();
+						// let minutes = date1.diff(date2, 'minutes');
+
           }
+
           const hasBeenUsedToday = actualKey === lastUserKey && !!boardingPass.passValidation.lastValidUsage;
 
           if (!hasBeenUsedToday) {
 
-            const customerAccount = firebase.default.firestore().collection('customers').doc(boardingPass.customer_id);
+            const customerAccount = firebase.default.firestore().collection('customers').doc(boardingPass.customerId);
             return customerAccount.get().then(async (querySnapShot) => {
-
+						
               if (querySnapShot.exists) {
-
-                console.log('account Exists: ', customerAccount);
+							
 
                 const userCustomerAccount = querySnapShot.data();
                 const forceRound = userCustomerAccount.forceRound === "true";
@@ -396,9 +416,8 @@ export class BoardingPassesService {
                 const isSameRound = forceRound ? program.round === boardingPass.round : true;
                 const isCorrectMatch = isSameRoute && isSameRound;
 
-                console.log('isCorrectMatch: ', isCorrectMatch);
                 if (isCorrectMatch) {
-
+			
                   const arrayUserFullName = this.user.displayName.split(' ');
                   const userFirstName = arrayUserFullName[0];
 
@@ -421,14 +440,14 @@ export class BoardingPassesService {
                   return message;
 
                 } else {
-
-                  console.log('isSameRoute?', isSameRoute)
+					
                   if (!isSameRoute) {
 
                     message = {
                       success: false,
                       type: 'route',
-                      title: 'Ruta incorrecta',
+                      // title: 'Ruta incorrecta',
+											title: 'RUTA INCORRECTA. Estas tratando de abordar una ruta que no te corresponde',
                       studentId: this.user.studentId,
                       studentName: this.user.displayName,
                       studentEmail: this.user.email,
@@ -443,11 +462,12 @@ export class BoardingPassesService {
                     return message;
 
                   } else {
-
+							
                     message = {
                       success: false,
                       type: 'round',
-                      title: 'Turno incorrecto',
+                      // title: 'Turno incorrecto',
+											title: 'TURNO INCORRECTO. Estas tratando de abordar en un turno no correspondiente.',
                       studentId: this.user.studentId,
                       studentName: this.user.displayName,
                       studentEmail: this.user.email,
@@ -468,7 +488,7 @@ export class BoardingPassesService {
             })
 
           } else {
-
+					
             const timeDistance = formatDistanceToNow(
               (boardingPass.passValidation.lastUsed).toDate(), {
               includeSeconds: true,
@@ -481,7 +501,10 @@ export class BoardingPassesService {
               'h:mm a',
               { locale: es }
             );
-
+						
+						/*if (boardingPass.passValidation.dateScan === undefined) {
+							boardingPass.passValidation['dateScan'] = moment().format();
+						}*/
             const programType = program.type === 'M' ? 'ida' : 'regreso';
 
             message = {
@@ -498,34 +521,56 @@ export class BoardingPassesService {
               timestamp: Timestamp.fromDate(boardingPass.passValidation.lastUsed.toDate()),
               message: `Tu pase ya ha sido usado el día de hoy de ${programType} hace ${timeDistance} (${timeFormat}) en la unidad ${boardingPass.passValidation.lastUsedVehicle}`
             };
-
+		
             return message;
           }
 
         } else {
-          message = {
-            success: false,
-            type: 'invalid',
-            title: 'Inválido',
-            studentId: this.user.studentId,
-            studentName: this.user.displayName,
-            studentEmail: this.user.email,
-            uid: this.user.uid,
-            boardingPassId,
-            isBoardingPassValid,
-            actualKey: 'sin información',
-            timestamp: boardingPass.lastUpdatedAt || Timestamp.fromDate(new Date()),
-            message: 'Presentarse en oficinas Bus2U para revisar sus pases activos'
-          };
+
+					if (boardingPass.active == false) {
+						message = {
+							success: false,
+							type: 'suspended',
+							// title: 'Inválido',
+							title: 'SUSPENDIDO. Este QR ha sido deshabilitado por falta de pago',
+							studentId: this.user.studentId,
+							studentName: this.user.displayName,
+							studentEmail: this.user.email,
+							uid: this.user.uid,
+							boardingPassId,
+							isBoardingPassValid,
+							actualKey: 'sin información',
+							timestamp: boardingPass.lastUpdatedAt || Timestamp.fromDate(new Date()),
+							message: 'Presentarse en oficinas Bus2U para revisar sus pases activos'
+						};
+					}else{
+						message = {
+							success: false,
+							type: 'overduePayment',
+							// title: 'Inválido',
+							title: 'PAGO VENCIDO. Favor de presentarse en oficinas para realizar el pago correspondiente',
+							studentId: this.user.studentId,
+							studentName: this.user.displayName,
+							studentEmail: this.user.email,
+							uid: this.user.uid,
+							boardingPassId,
+							isBoardingPassValid,
+							actualKey: 'sin información',
+							timestamp: boardingPass.lastUpdatedAt || Timestamp.fromDate(new Date()),
+							message: 'Presentarse en oficinas Bus2U para revisar sus pases activos'
+						};
+					}
 
           return message;
         }
 
       } else {
+		
         message = {
           success: false,
           type: 'unknown',
-          title: 'No encontrado',
+          // title: 'No encontrado',
+					title: 'QR INVALIDO. Presentarse en oficinas',
           studentId: this.user.studentId,
           studentName: this.user.displayName,
           studentEmail: this.user.email,

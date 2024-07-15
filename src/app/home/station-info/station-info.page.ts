@@ -13,7 +13,7 @@ import { formatDistance, formatDistanceToNow } from 'date-fns';
 import esLocale from 'date-fns/locale/es';
 import { BusInfoPage } from '../bus-info/bus-info.page';
 import { Subscription } from 'rxjs';
-
+declare  var google;
 @Component({
   selector: 'app-station-info',
   templateUrl: './station-info.page.html',
@@ -29,11 +29,13 @@ export class StationInfoPage implements OnInit, OnDestroy {
   markers: any = [];
   busesSubscription: Subscription;
 
+
+	public directionsService:      any;
+  public polygon:                any= [];
   constructor(private navParams: NavParams, public modalController: ModalController, private osrmService: OsrmService, private busesService: BusesService, private storageService: StorageService) { 
     this.station = this.navParams.get('station');
     this.routeId = this.navParams.get('routeId');
-    console.log(this.routeId);
-    console.log(this.station);
+		this.directionsService = new google.maps.DirectionsService();
   }
 
   ngOnInit() {
@@ -69,7 +71,6 @@ export class StationInfoPage implements OnInit, OnDestroy {
           device.occupancyColor = device.occupancy > 75 ? device.occupancy === 100 ? 'danger': 'warning' : 'success';
           device.occupancyIcon = device.occupancy > 75 ? device.occupancy === 100 ? 'close-circle': 'alert-circle' : 'checkmark-circle';
           this.busesList.push(device);
-          console.log(this.busesList);
 
           const latLng = [device.geopoint.latitude, device.geopoint.longitude];
             const iconUrl = device.occupancy > 75 ? device.occupancy === 100 ? 'assets/icon/marker_bus_danger.png': 'assets/icon/marker_bus_warning.png' : 'assets/icon/marker_bus_success.png';
@@ -128,14 +129,23 @@ export class StationInfoPage implements OnInit, OnDestroy {
   getTimeTravelDistance(currentBusLocation: any) {
     let stationCoordinates = `${this.station.geopoint.longitude},${this.station.geopoint.latitude}`;
     let busCoordinates = `${currentBusLocation.geopoint.longitude},${currentBusLocation.geopoint.latitude}`;
-    return this.osrmService.getTimeTravelDistance('car', stationCoordinates, busCoordinates).toPromise().then( (data) => {
+		return new Promise((resolve) => {
+			this.directionsService.route({
+				origin: new google.maps.LatLng(this.station.geopoint.longitude, this.station.geopoint.latitude),
+				destination: new google.maps.LatLng(currentBusLocation.geopoint.longitude, currentBusLocation.geopoint.latitude),
+				travelMode: 'DRIVING',
+			},(response, status)=>{
+				resolve(response)
+			})
+		})
+    /*return this.osrmService.getTimeTravelDistance('car', stationCoordinates, busCoordinates).toPromise().then( (data) => {
       console.log('data returned from osrmService', data);
         return data;
     }, err => console.log(err));
+		*/
   }
 
   loadMap() {
-    console.log(this.station.geopoint.longitude);
     this.stationMap = new Map("station_map").setView([this.station.geopoint.latitude, this.station.geopoint.longitude], 18);
     this.stationMap.whenReady( () => {
       setTimeout(() => {
@@ -156,7 +166,6 @@ export class StationInfoPage implements OnInit, OnDestroy {
   updateDevices() {
     if(true) { //this.canShowDevices()
       
-      console.log(this.user.defaultRoute);
       this.busesService.getLiveBusesRoute(this.user, this.user.defaultRoute).pipe(take(1),
         map(actions => actions.map(a => {
           const data = a.payload.doc.data() as any;
@@ -164,7 +173,6 @@ export class StationInfoPage implements OnInit, OnDestroy {
           return { id, ...data };
         }))
       ).subscribe((devices) => {
-        console.log(devices);
           devices.forEach( (device:any) => {
             
           });

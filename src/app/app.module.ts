@@ -29,7 +29,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 //Geolocation
 import { Geolocation } from '@awesome-cordova-plugins/geolocation/ngx';
-import { BackgroundGeolocation } from '@awesome-cordova-plugins/background-geolocation/ngx';
+// import { BackgroundGeolocation } from '@awesome-cordova-plugins/background-geolocation/ngx';
 
 // i18n
 import { registerLocaleData } from '@angular/common';
@@ -39,9 +39,17 @@ import localeMXExtra from '@angular/common/locales/extra/es-MX';
 registerLocaleData(localeEs, 'es-MX', localeMXExtra);
 
 //Call Number
+import { Camera, CameraOptions } from '@awesome-cordova-plugins/camera/ngx';
 import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
 import { Vibration } from '@awesome-cordova-plugins/vibration/ngx';
 import { AppComponent } from './app.component';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx'
+// import { AndroidPermissions }  from '@awesome-cordova-plugins/android-permissions/ngx';
+import { AndroidPermissions }  from '@ionic-native/android-permissions/ngx';
+import { OpenNativeSettings } from '@awesome-cordova-plugins/open-native-settings/ngx';
+import { Media, MediaObject } from '@ionic-native/media/ngx';
+import { File } from '@ionic-native/file/ngx';
+import { Base64 } from '@ionic-native/base64/ngx';
 
 @NgModule({
   declarations: [AppComponent, MenuPage],
@@ -64,14 +72,21 @@ import { AppComponent } from './app.component';
   providers: [
     // StatusBar,
     // SplashScreen,
+		Camera,
     Geolocation,
     CallNumber,
     Vibration,
+		Media,
+		File,
+		Base64,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: LOCALE_ID, useValue: 'es-MX' },
     AngularFireAuthGuard,
-    BackgroundGeolocation,
-    QRScanner
+    // BackgroundGeolocation,
+		BackgroundMode,
+		AndroidPermissions,
+    QRScanner,
+		OpenNativeSettings
   ],
   bootstrap: [AppComponent]
 })

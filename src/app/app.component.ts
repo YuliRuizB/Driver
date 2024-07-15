@@ -7,15 +7,15 @@ import { ThemeService } from './shared/services/themeservice.service';
 import { AuthService } from '@shared/services/auth.service';
 import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
 
-import { BackgroundGeolocation, BackgroundGeolocationConfig, BackgroundGeolocationEvents, BackgroundGeolocationResponse } from '@awesome-cordova-plugins/background-geolocation/ngx';
+// import { BackgroundGeolocation, BackgroundGeolocationConfig, BackgroundGeolocationEvents, BackgroundGeolocationResponse } from '@awesome-cordova-plugins/background-geolocation/ngx';
 
-const config: BackgroundGeolocationConfig = {
+/*const config: BackgroundGeolocationConfig = {
   desiredAccuracy: 10,
   stationaryRadius: 20,
   distanceFilter: 30,
   debug: false, //  enable this hear sounds for background-geolocation life-cycle.
   stopOnTerminate: false, // enable this to clear background location settings when the app terminates
-};
+};*/
 
 @Component({
   selector: 'app-root',
@@ -95,7 +95,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private callNumber: CallNumber,
     private alertController: AlertController,
-    private backgroundGeolocation: BackgroundGeolocation
+    // private backgroundGeolocation: BackgroundGeolocation
   ) {
     this.initializeApp();
   
@@ -114,7 +114,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   backgroundGeolocationConfig() {
-    this.backgroundGeolocation.configure(config)
+    /*this.backgroundGeolocation.configure(config)
   .then(() => {
 
     this.backgroundGeolocation.on(BackgroundGeolocationEvents.location).subscribe((location: BackgroundGeolocationResponse) => {
@@ -126,7 +126,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.backgroundGeolocation.finish(); // FOR IOS ONLY
     });
 
-  });
+  });*/
   }
 
   ngOnInit() {
